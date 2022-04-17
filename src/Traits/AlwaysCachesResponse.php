@@ -28,9 +28,9 @@ trait AlwaysCachesResponse
         // We should also intercept the response and set the "cached" property to true.
 
         $this->addResponseInterceptor(function (SaloonRequest $request, SaloonResponse $response) {
-            $cacheHeader = $response->header('X-Saloon-Cache');
+            $isCached = $response->header('X-Saloon-Cache') === 'Cached';
 
-            if ($cacheHeader === 'Cached') {
+            if ($isCached) {
                 $response->setCached(true);
             }
 
@@ -49,10 +49,11 @@ trait AlwaysCachesResponse
     protected function cacheKey(SaloonRequest $request): string
     {
         $requestUrl = $request->getFullRequestUrl();
+        $className = get_class($request);
         $headers = $request->getHeaders();
         $config = $request->getConfig();
 
-        return json_encode(compact('requestUrl', 'headers', 'config'), JSON_THROW_ON_ERROR);
+        return json_encode(compact('requestUrl', 'className', 'headers', 'config'), JSON_THROW_ON_ERROR);
     }
 
     /**

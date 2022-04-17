@@ -30,3 +30,11 @@ test('a request with the AlwaysCachesRequests trait will cache the response', fu
     expect($responseB->header('X-Saloon-Cache'))->toEqual('Cached');
     expect($responseB->json())->toEqual(['name' => 'Sam']);
 });
+
+test('a response will not be cached if the response was not 2xx', function () {
+    //
+});
+
+test('a custom cache key can be provided on the response', function () {
+    //
+});
