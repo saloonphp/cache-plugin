@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Europe/London');
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -24,9 +26,10 @@
 |
 */
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
+use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use Sammyjo20\Saloon\Clients\MockClient;
+use Sammyjo20\Saloon\Http\MockResponse;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,3 +41,18 @@ expect()->extend('toBeOne', function () {
 | global functions to help you to reduce the number of lines of code in your test files.
 |
 */
+
+function testApi()
+{
+    return 'https://tests.saloon.dev';
+}
+
+function mockClient(mixed $data = [], int $status = 200, array $headers = [], array $config = [])
+{
+    return new MockClient([new MockResponse($data, $status, $headers, $config)]);
+}
+
+function cachePath()
+{
+    return getcwd() . '/tests/cache';
+}
