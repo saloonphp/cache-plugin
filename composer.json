@@ -5,8 +5,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Sammyjo20\\Package\\": "src/",
-            "Sammyjo20\\Package\\Tests\\": "tests/"
+            "Sammyjo20\\SaloonCachePlugin\\": "src/",
+            "Sammyjo20\\SaloonCachePlugin\\Tests\\": "tests/"
         }
     },
     "authors": [
