@@ -17,6 +17,5 @@ class CacheKeyHelper
      */
     public static function generateFromRequest(SaloonRequest $request, bool $generateHash = true): string
     {
-
     }
 }

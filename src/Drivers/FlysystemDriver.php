@@ -4,7 +4,6 @@ namespace Sammyjo20\SaloonCachePlugin\Drivers;
 
 use League\Flysystem\Filesystem;
 use League\Flysystem\UnableToReadFile;
-use Sammyjo20\Saloon\Http\SaloonResponse;
 use Sammyjo20\SaloonCachePlugin\Http\CachedResponse;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
 
@@ -15,8 +14,7 @@ class FlysystemDriver implements CacheDriver
      */
     public function __construct(
         protected Filesystem $filesystem,
-    )
-    {
+    ) {
         //
     }
 

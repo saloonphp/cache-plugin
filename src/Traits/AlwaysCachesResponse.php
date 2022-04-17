@@ -4,8 +4,8 @@ namespace Sammyjo20\SaloonCachePlugin\Traits;
 
 use Sammyjo20\Saloon\Http\SaloonRequest;
 use Sammyjo20\Saloon\Http\SaloonResponse;
-use Sammyjo20\SaloonCachePlugin\Http\Middleware\ExplicitCacheMiddleware;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
+use Sammyjo20\SaloonCachePlugin\Http\Middleware\ExplicitCacheMiddleware;
 
 trait AlwaysCachesResponse
 {

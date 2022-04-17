@@ -1,9 +1,9 @@
 <?php
 
 use League\Flysystem\Filesystem;
-use League\Flysystem\Local\LocalFilesystemAdapter;
-use Sammyjo20\Saloon\Clients\MockClient;
 use Sammyjo20\Saloon\Http\MockResponse;
+use Sammyjo20\Saloon\Clients\MockClient;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
 
 beforeEach(function () {

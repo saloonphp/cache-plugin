@@ -3,13 +3,13 @@
 namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests;
 
 use League\Flysystem\Filesystem;
-use League\Flysystem\Local\LocalFilesystemAdapter;
 use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
+use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
 use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCachesResponse;
+use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
 
 class CachedUserRequest extends SaloonRequest
 {

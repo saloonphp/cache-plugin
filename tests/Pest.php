@@ -26,10 +26,8 @@ date_default_timezone_set('Europe/London');
 |
 */
 
-use League\Flysystem\Filesystem;
-use League\Flysystem\Local\LocalFilesystemAdapter;
-use Sammyjo20\Saloon\Clients\MockClient;
 use Sammyjo20\Saloon\Http\MockResponse;
+use Sammyjo20\Saloon\Clients\MockClient;
 
 /*
 |--------------------------------------------------------------------------

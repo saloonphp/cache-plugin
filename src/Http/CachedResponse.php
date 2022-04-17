@@ -2,9 +2,9 @@
 
 namespace Sammyjo20\SaloonCachePlugin\Http;
 
+use GuzzleHttp\Psr7\Utils;
 use Carbon\CarbonInterface;
 use GuzzleHttp\Psr7\PumpStream;
-use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Sammyjo20\SaloonCachePlugin\Helpers\BodyStore;
 
@@ -17,8 +17,7 @@ class CachedResponse
     public function __construct(
         protected CarbonInterface $expiry,
         protected ResponseInterface $response,
-    )
-    {
+    ) {
         //
     }
 

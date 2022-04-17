@@ -2,7 +2,6 @@
 
 namespace Sammyjo20\SaloonCachePlugin\Interfaces;
 
-use Sammyjo20\Saloon\Http\SaloonResponse;
 use Sammyjo20\SaloonCachePlugin\Http\CachedResponse;
 
 interface CacheDriver
