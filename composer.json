@@ -1,6 +1,6 @@
 {
     "name": "sammyjo20/saloon-cache-plugin",
-    "description": "Description",
+    "description": "Official plugin for caching Saloon responses",
     "type": "library",
     "license": "MIT",
     "autoload": {
