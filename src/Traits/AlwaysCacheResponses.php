@@ -15,10 +15,17 @@ trait AlwaysCacheResponses
      *
      * @var array
      */
-    private array $safeMethods = [
+    private array $safeCacheMethods = [
         Saloon::GET,
         Saloon::OPTIONS,
     ];
+
+    /**
+     * Is caching enabled?
+     *
+     * @var bool
+     */
+    protected bool $cachingEnabled = true;
 
     /**
      * Boot the Saloon plugin
@@ -30,10 +37,14 @@ trait AlwaysCacheResponses
      */
     public function bootAlwaysCacheResponses(SaloonRequest $request): void
     {
+        if ($this->cachingEnabled === false) {
+            return;
+        }
+
         // We should only cache on "read-only" methods and not on methods
         // like POST, PUT.
 
-        if (! in_array($request->getMethod(), $this->safeMethods, true)) {
+        if (! in_array($request->getMethod(), $this->safeCacheMethods, true)) {
             return;
         }
 
@@ -84,6 +95,30 @@ trait AlwaysCacheResponses
     public function generateCacheKey(SaloonRequest $request, array $headers): string
     {
         return hash('sha256', $this->cacheKey($request, $headers));
+    }
+
+    /**
+     * Enable caching for the request.
+     *
+     * @return $this
+     */
+    public function enableCaching(): self
+    {
+        $this->cachingEnabled = true;
+
+        return $this;
+    }
+
+    /**
+     * Disable caching for the request.
+     *
+     * @return $this
+     */
+    public function disableCaching(): self
+    {
+        $this->cachingEnabled = false;
+
+        return $this;
     }
 
     /**

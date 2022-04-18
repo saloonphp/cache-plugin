@@ -18,16 +18,15 @@
     "minimum-stability": "stable",
     "require": {
         "php": "^8.0",
-        "sammyjo20/saloon": "^1.0",
+        "sammyjo20/saloon": "^1.0.1",
         "nesbot/carbon": "^2.57"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.5",
-        "pestphp/pest": "^1.21",
-        "spatie/ray": "^1.33",
+        "friendsofphp/php-cs-fixer": "^3.8",
+        "pestphp/pest": "^1.21.2",
+        "spatie/ray": "^1.34.2",
         "league/flysystem": "^3.0",
-        "illuminate/cache": "^8.0|^9.0",
-        "orchestra/testbench": "^7.4"
+        "orchestra/testbench": "^7.0"
     },
     "scripts": {
         "test": [

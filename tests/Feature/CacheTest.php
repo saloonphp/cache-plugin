@@ -172,3 +172,32 @@ test('if a request has cache configuration then it will take priority over the c
     expect($filesystem->directoryExists('custom'))->toBeTrue();
     expect(count($filesystem->listContents('custom')->toArray()))->toEqual(1);
 });
+
+test('you can disable the cache', function () {
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+        MockResponse::make(['name' => 'Gareth']),
+        MockResponse::make(['name' => 'Michael']),
+    ]);
+
+    $requestA = new CachedUserRequest();
+    $responseA = $requestA->send($mockClient);
+
+    expect($responseA->isCached())->toBeFalse();
+    expect($responseA->json())->toEqual(['name' => 'Sam']);
+
+    $requestB = new CachedUserRequest();
+    $responseB = $requestB->send($mockClient);
+
+    expect($responseB->isCached())->toBeTrue();
+    expect($responseB->header('X-Saloon-Cache'))->toEqual('Cached');
+    expect($responseB->json())->toEqual(['name' => 'Sam']);
+
+    $requestC = new CachedUserRequest();
+    $requestC->disableCaching();
+
+    $responseC = $requestC->send($mockClient);
+
+    expect($responseC->isCached())->toBeFalse();
+    expect($responseC->json())->toEqual(['name' => 'Michael']);
+});
