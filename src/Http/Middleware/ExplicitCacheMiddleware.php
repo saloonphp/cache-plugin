@@ -12,10 +12,25 @@ use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
 
 class ExplicitCacheMiddleware
 {
+    /**
+     * The Saloon request used for caching.
+     *
+     * @var SaloonRequest
+     */
     protected SaloonRequest $request;
 
+    /**
+     * The cache driver used for caching.
+     *
+     * @var CacheDriver
+     */
     protected CacheDriver $cacheDriver;
 
+    /**
+     * The TTL in seconds.
+     *
+     * @var int
+     */
     protected int $cacheTTL;
 
     /**

@@ -44,6 +44,10 @@ class SimpleCacheDriver implements CacheDriver
     {
         $data = $this->store->get($cacheKey, null);
 
+        if (empty($data)) {
+            return null;
+        }
+
         return unserialize($data, ['allowed_classes' => true]);
     }
 

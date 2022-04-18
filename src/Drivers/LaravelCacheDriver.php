@@ -2,7 +2,7 @@
 
 namespace Sammyjo20\SaloonCachePlugin\Drivers;
 
-use Illuminate\Cache\Repository;
+use Illuminate\Contracts\Cache\Repository;
 use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
 
@@ -31,10 +31,15 @@ class LaravelCacheDriver implements CacheDriver
     /**
      * @param string $cacheKey
      * @return CachedResponse|null
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function get(string $cacheKey): ?CachedResponse
     {
         $data = $this->store->get($cacheKey, null);
+
+        if (empty($data)) {
+            return null;
+        }
 
         return unserialize($data, ['allowed_classes' => true]);
     }

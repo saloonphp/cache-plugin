@@ -33,7 +33,7 @@ trait AlwaysCacheResponses
         // We should only cache on "read-only" methods and not on methods
         // like POST, PUT.
 
-        if (! in_array($request->getMethod(), $this->safeMethods, false)) {
+        if (! in_array($request->getMethod(), $this->safeMethods, true)) {
             return;
         }
 
