@@ -1,5 +1,7 @@
 <?php
 
+use Sammyjo20\SaloonCachePlugin\Tests\LaravelTestCase;
+
 date_default_timezone_set('Europe/London');
 
 /*
@@ -13,7 +15,7 @@ date_default_timezone_set('Europe/London');
 |
 */
 
-// uses(Tests\TestCase::class)->in('Feature');
+uses(LaravelTestCase::class)->in('Feature/Laravel');
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +28,6 @@ date_default_timezone_set('Europe/London');
 |
 */
 
-use Sammyjo20\Saloon\Http\MockResponse;
-use Sammyjo20\Saloon\Clients\MockClient;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,11 +43,6 @@ use Sammyjo20\Saloon\Clients\MockClient;
 function testApi()
 {
     return 'https://tests.saloon.dev';
-}
-
-function mockClient(mixed $data = [], int $status = 200, array $headers = [], array $config = [])
-{
-    return new MockClient([new MockResponse($data, $status, $headers, $config)]);
 }
 
 function cachePath()
