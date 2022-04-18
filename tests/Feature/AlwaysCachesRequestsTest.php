@@ -43,6 +43,6 @@ test('a custom cache key can be provided on the response', function () {
     //
 });
 
-test('you will not recieve a cached response if the response has expired', function () {
+test('you will not receive a cached response if the response has expired', function () {
     //
 });

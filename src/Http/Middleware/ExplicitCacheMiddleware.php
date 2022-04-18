@@ -3,11 +3,11 @@
 namespace Sammyjo20\SaloonCachePlugin\Http\Middleware;
 
 use Carbon\CarbonImmutable;
+use GuzzleHttp\Promise\FulfilledPromise;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Promise\FulfilledPromise;
 use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\SaloonCachePlugin\Http\CachedResponse;
+use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
 
 class ExplicitCacheMiddleware

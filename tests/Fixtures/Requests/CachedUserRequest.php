@@ -8,12 +8,12 @@ use Sammyjo20\Saloon\Http\SaloonRequest;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
 use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
-use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCachesResponses;
+use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
 
 class CachedUserRequest extends SaloonRequest
 {
-    use AlwaysCachesResponses;
+    use AlwaysCacheResponses;
 
     protected ?string $connector = TestConnector::class;
 

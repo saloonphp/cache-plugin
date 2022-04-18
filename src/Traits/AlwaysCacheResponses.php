@@ -8,7 +8,7 @@ use Sammyjo20\Saloon\Http\SaloonResponse;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
 use Sammyjo20\SaloonCachePlugin\Http\Middleware\ExplicitCacheMiddleware;
 
-trait AlwaysCachesResponses
+trait AlwaysCacheResponses
 {
     /**
      * The methods that caching is enabled.
@@ -21,12 +21,14 @@ trait AlwaysCachesResponses
     ];
 
     /**
+     * Boot the Saloon plugin
+     *
      * @param SaloonRequest $request
      * @return void
      * @throws \JsonException
      * @throws \Sammyjo20\Saloon\Exceptions\SaloonInvalidConnectorException
      */
-    public function bootAlwaysCachesResponses(SaloonRequest $request): void
+    public function bootAlwaysCacheResponses(SaloonRequest $request): void
     {
         // We should only cache on "read-only" methods and not on methods
         // like POST, PUT.
@@ -62,7 +64,7 @@ trait AlwaysCachesResponses
      * @throws \JsonException
      * @throws \Sammyjo20\Saloon\Exceptions\SaloonInvalidConnectorException
      */
-    protected function cacheKey(SaloonRequest $request, array $headers): string
+    protected function cacheKey(SaloonRequest $request, array $headers, bool $hashKey = true): string
     {
         $requestUrl = $request->getFullRequestUrl();
         $className = get_class($request);
@@ -71,6 +73,8 @@ trait AlwaysCachesResponses
     }
 
     /**
+     * Generate our cache key which creates a SHA-256 hash of the key
+     *
      * @param SaloonRequest $request
      * @param array $headers
      * @return string
