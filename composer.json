@@ -26,7 +26,8 @@
         "pestphp/pest": "^1.21.2",
         "spatie/ray": "^1.34.2",
         "league/flysystem": "^3.0",
-        "orchestra/testbench": "^7.0"
+        "orchestra/testbench": "^7.0",
+        "psr/simple-cache": "^3.0"
     },
     "scripts": {
         "test": [
