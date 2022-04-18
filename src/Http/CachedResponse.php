@@ -51,6 +51,16 @@ class CachedResponse
         return $this->response;
     }
 
+    /**
+     * The expiry datetime of the cache response.
+     *
+     * @return CarbonInterface
+     */
+    public function getExpiry(): CarbonInterface
+    {
+        return $this->expiry;
+    }
+
     public function __sleep(): array
     {
         $responseBody = (string)$this->response->getBody();
