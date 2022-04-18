@@ -8,9 +8,8 @@ use Sammyjo20\Saloon\Http\SaloonRequest;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
 use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\CachedConnector;
 use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
+use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\CachedConnector;
 
 class CachedUserRequestOnCachedConnector extends SaloonRequest
 {

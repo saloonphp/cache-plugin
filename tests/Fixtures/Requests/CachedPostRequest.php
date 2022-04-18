@@ -5,8 +5,8 @@ namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests;
 use League\Flysystem\Filesystem;
 use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
-use League\Flysystem\Local\LocalFilesystemAdapter;
 use Sammyjo20\Saloon\Traits\Plugins\HasJsonBody;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
 use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
 use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
@@ -29,7 +29,7 @@ class CachedPostRequest extends SaloonRequest
     public function defaultData(): array
     {
         return [
-            'name' => 'Sammy'
+            'name' => 'Sammy',
         ];
     }
 

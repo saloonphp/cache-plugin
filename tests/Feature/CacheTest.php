@@ -4,13 +4,13 @@ use League\Flysystem\Filesystem;
 use Sammyjo20\Saloon\Http\MockResponse;
 use Sammyjo20\Saloon\Clients\MockClient;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\AdvancedCustomKeyCachedUserRequest;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedPostRequest;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedUserRequestOnCachedConnector;
+use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\ShortLifeCachedUserRequest;
+use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\AdvancedCustomKeyCachedUserRequest;
+use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedUserRequestOnCachedConnector;
 
 $filesystem = new Filesystem(new LocalFilesystemAdapter(cachePath()));
 

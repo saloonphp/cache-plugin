@@ -1,9 +1,9 @@
 <?php
 
-use Sammyjo20\Saloon\Clients\MockClient;
 use Sammyjo20\Saloon\Http\MockResponse;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\SimpleCachedUserRequest;
+use Sammyjo20\Saloon\Clients\MockClient;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Stores\ArrayCache;
+use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\SimpleCachedUserRequest;
 
 it('will return a cached response', function () {
     $mockClient = new MockClient([

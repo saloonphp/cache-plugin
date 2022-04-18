@@ -2,11 +2,10 @@
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Sammyjo20\Saloon\Clients\MockClient;
 use Sammyjo20\Saloon\Http\MockResponse;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\SimpleCachedUserRequest;
+use Sammyjo20\Saloon\Clients\MockClient;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Stores\ArrayCache;
+use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\SimpleCachedUserRequest;
 
 test('the response body is rewound after caching for other middleware', function () {
     $mockClient = new MockClient([
