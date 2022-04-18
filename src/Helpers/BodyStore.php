@@ -5,28 +5,42 @@ namespace Sammyjo20\SaloonCachePlugin\Helpers;
 /**
  * This object is only meant to provide a callable to `GuzzleHttp\Psr7\PumpStream`.
  *
- * @internal don't use it in your project.
+ * @internal Don't use in your project.
  * @see Credit https://raw.githubusercontent.com/Kevinrob/guzzle-cache-middleware/0a61532ee8bf278a0d875a86a536aeeab592da5a/src/BodyStore.php
  */
 class BodyStore
 {
+    /**
+     * @var string
+     */
     private string $body;
 
-    private $read = 0;
+    /**
+     * @var int
+     */
+    private int $read = 0;
 
-    private $toRead;
+    /**
+     * @var int
+     */
+    private int $toRead;
 
+    /**
+     * @param string $body
+     */
     public function __construct(string $body)
     {
         $this->body = $body;
-        $this->toRead = mb_strlen($this->body);
+        $length = mb_strlen($body);
+
+        $this->toRead = is_int($length) ? $length : 0;
     }
 
     /**
      * @param int $length
-     * @return false|string
+     * @return string|bool
      */
-    public function __invoke(int $length)
+    public function __invoke(int $length): string|bool
     {
         if ($this->toRead <= 0) {
             return false;
@@ -34,11 +48,7 @@ class BodyStore
 
         $length = min($length, $this->toRead);
 
-        $body = mb_substr(
-            $this->body,
-            $this->read,
-            $length
-        );
+        $body = mb_substr($this->body, $this->read, $length);
 
         $this->toRead -= $length;
         $this->read += $length;
