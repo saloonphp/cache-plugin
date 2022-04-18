@@ -9,4 +9,4 @@ composer require sammyjo20/saloon-cache-plugin
 
 ### Documentation
 
-[Click here to read the documentation](https://docs.saloon.dev/)
+[Click here to read the documentation](https://docs.saloon.dev/next-steps/caching)
