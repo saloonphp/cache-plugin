@@ -31,6 +31,11 @@ class FlysystemDriver implements CacheDriver
             return null;
         }
 
-        return unserialize($file);
+        return unserialize($file, ['allowed_classes' => true]);
+    }
+
+    public function delete(string $cacheKey): void
+    {
+        // TODO: Implement delete() method.
     }
 }

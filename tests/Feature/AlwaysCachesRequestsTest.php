@@ -31,10 +31,18 @@ test('a request with the AlwaysCachesRequests trait will cache the response', fu
     expect($responseB->json())->toEqual(['name' => 'Sam']);
 });
 
+test('it wont cache on anything other than GET and OPTIONS', function () {
+    //
+});
+
 test('a response will not be cached if the response was not 2xx', function () {
     //
 });
 
 test('a custom cache key can be provided on the response', function () {
+    //
+});
+
+test('you will not recieve a cached response if the response has expired', function () {
     //
 });

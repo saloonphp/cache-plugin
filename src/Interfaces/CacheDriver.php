@@ -19,7 +19,15 @@ interface CacheDriver
      * Get the cached response from the driver.
      *
      * @param string $cacheKey
-     * @return CachedResponse
+     * @return CachedResponse|null
      */
     public function get(string $cacheKey): ?CachedResponse;
+
+    /**
+     * Delete the cached response.
+     *
+     * @param string $cacheKey
+     * @return void
+     */
+    public function delete(string $cacheKey): void;
 }

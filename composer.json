@@ -1,5 +1,5 @@
 {
-    "name": "sammyjo20/package-template",
+    "name": "sammyjo20/saloon-cache-plugin",
     "description": "Description",
     "type": "library",
     "license": "MIT",
@@ -19,13 +19,13 @@
     "require": {
         "php": "^8.0",
         "sammyjo20/saloon": "^1.0",
-        "league/flysystem": "^3.0",
         "nesbot/carbon": "^2.57"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",
         "pestphp/pest": "^1.21",
-        "spatie/ray": "^1.33"
+        "spatie/ray": "^1.33",
+        "league/flysystem": "^3.0"
     },
     "scripts": {
         "test": [

@@ -6,22 +6,26 @@ use Carbon\CarbonImmutable;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Promise\FulfilledPromise;
+use Sammyjo20\Saloon\Http\SaloonRequest;
 use Sammyjo20\SaloonCachePlugin\Http\CachedResponse;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
 
 class ExplicitCacheMiddleware
 {
+    protected SaloonRequest $request;
+
+    protected CacheDriver $cacheDriver;
+
+    protected int $cacheTTL;
+
     /**
-     * @param CacheDriver $cacheDriver
-     * @param string $cacheKey
-     * @param int $cacheTTL
+     * @param SaloonRequest $request
      */
-    public function __construct(
-        protected CacheDriver $cacheDriver,
-        protected string      $cacheKey,
-        protected int         $cacheTTL,
-    ) {
-        //
+    public function __construct(SaloonRequest $request)
+    {
+        $this->request = $request;
+        $this->cacheDriver = $request->cacheDriver();
+        $this->cacheTTL = $request->cacheTTLInSeconds();
     }
 
     /**
@@ -33,15 +37,21 @@ class ExplicitCacheMiddleware
     public function __invoke(callable $handler): callable
     {
         return function (RequestInterface $request, array $options) use ($handler) {
+            $cacheKey = $this->request->generateCacheKey($this->request, $request->getHeaders());
+
             // Check if the cached file exists from the cache key
             // and also check if it hasn't expired.
 
-            $cacheFile = $this->cacheDriver->get($this->cacheKey);
+            $cacheFile = $this->cacheDriver->get($cacheKey);
 
             // If the file is valid, then we should return the promise here.
 
-            if (isset($cacheFile) && $cacheFile->isValid()) {
-                return new FulfilledPromise($cacheFile->getResponse()->withHeader('X-Saloon-Cache', 'Cached'));
+            if (isset($cacheFile)) {
+                if ($cacheFile->isValid()) {
+                    return new FulfilledPromise($cacheFile->getResponse()->withHeader('X-Saloon-Cache', 'Cached'));
+                }
+
+                $this->cacheDriver->delete($cacheKey);
             }
 
             // Otherwise, continue with the request and then cache the response
@@ -49,13 +59,11 @@ class ExplicitCacheMiddleware
 
             $promise = $handler($request, $options);
 
-            return $promise->then(
-                function (ResponseInterface $response) {
-                    $this->cacheResponse($response);
+            return $promise->then(function (ResponseInterface $response) use ($cacheKey) {
+                $this->cacheResponse($cacheKey, $response);
 
-                    return $response;
-                }
-            );
+                return $response;
+            });
         };
     }
 
@@ -72,10 +80,11 @@ class ExplicitCacheMiddleware
     /**
      * Cache the response. Only cache if the response is a 2xx response.
      *
+     * @param string $cacheKey
      * @param ResponseInterface $response
      * @return void
      */
-    private function cacheResponse(ResponseInterface $response): void
+    private function cacheResponse(string $cacheKey, ResponseInterface $response): void
     {
         $status = $response->getStatusCode();
 
@@ -85,6 +94,6 @@ class ExplicitCacheMiddleware
 
         $cachedResponse = new CachedResponse($this->generateExpiry(), $response);
 
-        $this->cacheDriver->set($this->cacheKey, $cachedResponse);
+        $this->cacheDriver->set($cacheKey, $cachedResponse);
     }
 }

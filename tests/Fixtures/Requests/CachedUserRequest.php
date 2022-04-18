@@ -8,12 +8,12 @@ use Sammyjo20\Saloon\Http\SaloonRequest;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
 use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
-use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCachesResponse;
+use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCachesResponses;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
 
 class CachedUserRequest extends SaloonRequest
 {
-    use AlwaysCachesResponse;
+    use AlwaysCachesResponses;
 
     protected ?string $connector = TestConnector::class;
 
@@ -24,13 +24,13 @@ class CachedUserRequest extends SaloonRequest
         return '/user';
     }
 
-    protected function cacheDriver(): CacheDriver
+    public function cacheDriver(): CacheDriver
     {
         return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }
 
-    protected function cacheTTLInSeconds(): int
+    public function cacheTTLInSeconds(): int
     {
-        return 86400;
+        return 60;
     }
 }

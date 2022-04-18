@@ -2,32 +2,46 @@
 
 namespace Sammyjo20\SaloonCachePlugin\Traits;
 
+use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
 use Sammyjo20\Saloon\Http\SaloonResponse;
 use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
 use Sammyjo20\SaloonCachePlugin\Http\Middleware\ExplicitCacheMiddleware;
 
-trait AlwaysCachesResponse
+trait AlwaysCachesResponses
 {
+    /**
+     * The methods that caching is enabled.
+     *
+     * @var array
+     */
+    private array $safeMethods = [
+        Saloon::GET,
+        Saloon::OPTIONS,
+    ];
+
     /**
      * @param SaloonRequest $request
      * @return void
      * @throws \JsonException
      * @throws \Sammyjo20\Saloon\Exceptions\SaloonInvalidConnectorException
      */
-    public function bootAlwaysCachesResponse(SaloonRequest $request): void
+    public function bootAlwaysCachesResponses(SaloonRequest $request): void
     {
-        $driver = $this->cacheDriver();
-        $key = $this->generateCacheKey($request);
-        $ttl = $this->cacheTTLInSeconds();
+        // We should only cache on "read-only" methods and not on methods
+        // like POST, PUT.
+
+        if (! in_array($request->getMethod(), $this->safeMethods, false)) {
+            return;
+        }
 
         // Run the custom cache middleware.
 
-        $this->addHandler('saloonCache', new ExplicitCacheMiddleware($driver, $key, $ttl));
+        $request->addHandler('saloonCache', new ExplicitCacheMiddleware($request));
 
         // We should also intercept the response and set the "cached" property to true.
 
-        $this->addResponseInterceptor(function (SaloonRequest $request, SaloonResponse $response) {
+        $request->addResponseInterceptor(function (SaloonRequest $request, SaloonResponse $response) {
             $isCached = $response->header('X-Saloon-Cache') === 'Cached';
 
             if ($isCached) {
@@ -42,29 +56,30 @@ trait AlwaysCachesResponse
      * Customise the cache key used.
      *
      * @param SaloonRequest $request
+     * @param array $headers
+     * @param array $config
      * @return string
-     * @throws \Sammyjo20\Saloon\Exceptions\SaloonInvalidConnectorException
      * @throws \JsonException
+     * @throws \Sammyjo20\Saloon\Exceptions\SaloonInvalidConnectorException
      */
-    protected function cacheKey(SaloonRequest $request): string
+    protected function cacheKey(SaloonRequest $request, array $headers): string
     {
         $requestUrl = $request->getFullRequestUrl();
         $className = get_class($request);
-        $headers = $request->getHeaders();
-        $config = $request->getConfig();
 
-        return json_encode(compact('requestUrl', 'className', 'headers', 'config'), JSON_THROW_ON_ERROR);
+        return json_encode(compact('requestUrl', 'className', 'headers'), JSON_THROW_ON_ERROR);
     }
 
     /**
      * @param SaloonRequest $request
+     * @param array $headers
      * @return string
      * @throws \JsonException
      * @throws \Sammyjo20\Saloon\Exceptions\SaloonInvalidConnectorException
      */
-    private function generateCacheKey(SaloonRequest $request): string
+    public function generateCacheKey(SaloonRequest $request, array $headers): string
     {
-        return hash('sha256', $this->cacheKey($request));
+        return hash('sha256', $this->cacheKey($request, $headers));
     }
 
     /**
@@ -72,12 +87,12 @@ trait AlwaysCachesResponse
      *
      * @return mixed
      */
-    abstract protected function cacheDriver(): CacheDriver;
+    abstract public function cacheDriver(): CacheDriver;
 
     /**
      * Define the cache TTL (Time-to-live) in seconds.
      *
      * @return int
      */
-    abstract protected function cacheTTLInSeconds(): int;
+    abstract public function cacheTTLInSeconds(): int;
 }
