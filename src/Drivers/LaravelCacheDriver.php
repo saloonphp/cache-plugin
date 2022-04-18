@@ -13,8 +13,7 @@ class LaravelCacheDriver implements CacheDriver
      */
     public function __construct(
         protected Repository $store,
-    )
-    {
+    ) {
         //
     }
 

@@ -2,9 +2,9 @@
 
 namespace Sammyjo20\SaloonCachePlugin\Data;
 
+use GuzzleHttp\Psr7\Utils;
 use Carbon\CarbonInterface;
 use GuzzleHttp\Psr7\PumpStream;
-use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Sammyjo20\SaloonCachePlugin\Helpers\BodyStore;
 

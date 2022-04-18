@@ -16,8 +16,7 @@ class SimpleCacheDriver implements CacheDriver
      */
     public function __construct(
         protected CacheInterface $store,
-    )
-    {
+    ) {
         //
     }
 
