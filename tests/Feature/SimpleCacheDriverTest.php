@@ -6,8 +6,6 @@ use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Stores\ArrayCache;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\SimpleCachedUserRequest;
 
 it('will return a cached response', function () {
-    error_reporting(E_ALL ^ E_WARNING);
-
     $mockClient = new MockClient([
         MockResponse::make(['name' => 'Sam']),
         MockResponse::make(['name' => 'Gareth']),
