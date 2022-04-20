@@ -2,18 +2,17 @@
 
 namespace Sammyjo20\SaloonCachePlugin\Drivers;
 
-use League\Flysystem\Filesystem;
-use League\Flysystem\UnableToReadFile;
+use Illuminate\Contracts\Cache\Repository;
 use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriverInterface;
+use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
 
-class FlysystemDriverInterface implements CacheDriverInterface
+class LaravelCacheDriver implements DriverInterface
 {
     /**
-     * @param Filesystem $store
+     * @param Repository $store
      */
     public function __construct(
-        protected Filesystem $store,
+        protected Repository $store,
     ) {
         //
     }
@@ -22,25 +21,21 @@ class FlysystemDriverInterface implements CacheDriverInterface
      * @param string $cacheKey
      * @param CachedResponse $response
      * @return void
-     * @throws \League\Flysystem\FilesystemException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function set(string $cacheKey, CachedResponse $response): void
     {
-        $this->store->write($cacheKey, serialize($response));
+        $this->store->set($cacheKey, serialize($response), $response->getExpiry()->diffInSeconds());
     }
 
     /**
      * @param string $cacheKey
      * @return CachedResponse|null
-     * @throws \League\Flysystem\FilesystemException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function get(string $cacheKey): ?CachedResponse
     {
-        try {
-            $data = $this->store->read($cacheKey);
-        } catch (UnableToReadFile $exception) {
-            return null;
-        }
+        $data = $this->store->get($cacheKey, null);
 
         if (empty($data)) {
             return null;
@@ -52,14 +47,10 @@ class FlysystemDriverInterface implements CacheDriverInterface
     /**
      * @param string $cacheKey
      * @return void
-     * @throws \League\Flysystem\FilesystemException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function delete(string $cacheKey): void
     {
-        try {
-            $this->store->delete($cacheKey);
-        } catch (UnableToReadFile $exception) {
-            //
-        }
+        $this->store->delete($cacheKey);
     }
 }

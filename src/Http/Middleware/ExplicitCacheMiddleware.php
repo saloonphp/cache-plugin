@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Promise\FulfilledPromise;
 use Sammyjo20\Saloon\Http\SaloonRequest;
 use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriverInterface;
+use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
 
 class ExplicitCacheMiddleware
 {
@@ -22,9 +22,9 @@ class ExplicitCacheMiddleware
     /**
      * The cache driver used for caching.
      *
-     * @var CacheDriverInterface
+     * @var DriverInterface
      */
-    protected CacheDriverInterface $cacheDriver;
+    protected DriverInterface $cacheDriver;
 
     /**
      * The TTL in seconds.

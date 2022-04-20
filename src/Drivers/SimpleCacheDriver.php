@@ -2,22 +2,27 @@
 
 namespace Sammyjo20\SaloonCachePlugin\Drivers;
 
-use Illuminate\Contracts\Cache\Repository;
+use Psr\SimpleCache\CacheInterface;
 use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriverInterface;
+use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
 
-class LaravelCacheDriverInterface implements CacheDriverInterface
+/**
+ * PSR-16 Cache Driver
+ */
+class SimpleCacheDriver implements DriverInterface
 {
     /**
-     * @param Repository $store
+     * @param CacheInterface $store
      */
     public function __construct(
-        protected Repository $store,
+        protected CacheInterface $store,
     ) {
         //
     }
 
     /**
+     * Store the cached response.
+     *
      * @param string $cacheKey
      * @param CachedResponse $response
      * @return void
@@ -29,6 +34,8 @@ class LaravelCacheDriverInterface implements CacheDriverInterface
     }
 
     /**
+     * Get the cache key from storage
+     *
      * @param string $cacheKey
      * @return CachedResponse|null
      * @throws \Psr\SimpleCache\InvalidArgumentException
@@ -45,6 +52,8 @@ class LaravelCacheDriverInterface implements CacheDriverInterface
     }
 
     /**
+     * Remove the cached response from storage
+     *
      * @param string $cacheKey
      * @return void
      * @throws \Psr\SimpleCache\InvalidArgumentException
