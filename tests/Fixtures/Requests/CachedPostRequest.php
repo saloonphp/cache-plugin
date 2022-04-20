@@ -7,8 +7,8 @@ use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
 use Sammyjo20\Saloon\Traits\Plugins\HasJsonBody;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
 use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
+use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
 use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
 
