@@ -2,8 +2,6 @@
 
 use Sammyjo20\SaloonCachePlugin\Tests\LaravelTestCase;
 
-date_default_timezone_set('Europe/London');
-
 /*
 |--------------------------------------------------------------------------
 | Test Case

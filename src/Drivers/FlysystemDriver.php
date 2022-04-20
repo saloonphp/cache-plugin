@@ -5,9 +5,9 @@ namespace Sammyjo20\SaloonCachePlugin\Drivers;
 use League\Flysystem\Filesystem;
 use League\Flysystem\UnableToReadFile;
 use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
+use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
 
-class FlysystemDriver implements CacheDriver
+class FlysystemDriver implements DriverInterface
 {
     /**
      * @param Filesystem $store

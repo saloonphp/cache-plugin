@@ -4,7 +4,7 @@ namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests;
 
 use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
+use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
 use Sammyjo20\SaloonCachePlugin\Drivers\SimpleCacheDriver;
 use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Stores\ArrayCache;
@@ -28,7 +28,7 @@ class SimpleCachedUserRequest extends SaloonRequest
         //
     }
 
-    public function cacheDriver(): CacheDriver
+    public function cacheDriver(): DriverInterface
     {
         return new SimpleCacheDriver($this->cache);
     }

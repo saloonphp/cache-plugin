@@ -5,7 +5,7 @@ namespace Sammyjo20\SaloonCachePlugin\Traits;
 use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
 use Sammyjo20\Saloon\Http\SaloonResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
+use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
 use Sammyjo20\SaloonCachePlugin\Http\Middleware\ExplicitCacheMiddleware;
 
 trait AlwaysCacheResponses
@@ -26,6 +26,13 @@ trait AlwaysCacheResponses
      * @var bool
      */
     protected bool $cachingEnabled = true;
+
+    /**
+     * Should the existing cache be invalidated?
+     *
+     * @var bool
+     */
+    protected bool $invalidateCache = false;
 
     /**
      * Boot the Saloon plugin
@@ -50,7 +57,7 @@ trait AlwaysCacheResponses
 
         // Run the custom cache middleware.
 
-        $request->addHandler('saloonCache', new ExplicitCacheMiddleware($request));
+        $request->addHandler('saloonCache', new ExplicitCacheMiddleware($request, $this->invalidateCache));
 
         // We should also intercept the response and set the "cached" property to true.
 
@@ -75,7 +82,7 @@ trait AlwaysCacheResponses
      * @throws \JsonException
      * @throws \Sammyjo20\Saloon\Exceptions\SaloonInvalidConnectorException
      */
-    protected function cacheKey(SaloonRequest $request, array $headers, bool $hashKey = true): string
+    protected function cacheKey(SaloonRequest $request, array $headers): string
     {
         $requestUrl = $request->getFullRequestUrl();
         $className = get_class($request);
@@ -122,11 +129,23 @@ trait AlwaysCacheResponses
     }
 
     /**
+     * Invalidate the current cache and refresh the cache.
+     *
+     * @return $this
+     */
+    public function invalidateCache(): self
+    {
+        $this->invalidateCache = true;
+
+        return $this;
+    }
+
+    /**
      * Return an instance of the cache driver that should be used.
      *
      * @return mixed
      */
-    abstract public function cacheDriver(): CacheDriver;
+    abstract public function cacheDriver(): DriverInterface;
 
     /**
      * Define the cache TTL (Time-to-live) in seconds.

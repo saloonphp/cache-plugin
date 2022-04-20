@@ -4,7 +4,7 @@ namespace Sammyjo20\SaloonCachePlugin\Interfaces;
 
 use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
 
-interface CacheDriver
+interface DriverInterface
 {
     /**
      * Store the cached response on the driver.
