@@ -201,3 +201,41 @@ test('you can disable the cache', function () {
     expect($responseC->isCached())->toBeFalse();
     expect($responseC->json())->toEqual(['name' => 'Michael']);
 });
+
+test('cache can be invalidated', function () {
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+        MockResponse::make(['name' => 'Gareth']),
+        MockResponse::make(['name' => 'Teo']),
+        MockResponse::make(['name' => 'Mantas']),
+    ]);
+
+    $requestA = new CachedUserRequest();
+    $responseA = $requestA->send($mockClient);
+
+    expect($responseA->isCached())->toBeFalse();
+    expect($responseA->json())->toEqual(['name' => 'Sam']);
+
+    $requestB = new CachedUserRequest();
+    $responseB = $requestB->send($mockClient);
+
+    // The response should now be cached...
+
+    expect($responseB->isCached())->toBeTrue();
+    expect($responseB->json())->toEqual(['name' => 'Sam']);
+
+    $requestC = new CachedUserRequest();
+    $requestC->invalidateCache();
+    $responseC = $requestC->send($mockClient);
+
+    expect($responseC->isCached())->toBeFalse();
+    expect($responseC->json())->toEqual(['name' => 'Teo']);
+
+    // Now just make sure that the new response is cached...
+
+    $requestD = new CachedUserRequest();
+    $responseD = $requestD->send($mockClient);
+
+    expect($responseD->isCached())->toBeTrue();
+    expect($responseD->json())->toEqual(['name' => 'Teo']);
+});

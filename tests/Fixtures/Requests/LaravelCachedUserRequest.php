@@ -5,8 +5,8 @@ namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests;
 use Illuminate\Support\Facades\Cache;
 use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
-use Sammyjo20\SaloonCachePlugin\Drivers\LaravelCacheDriver;
+use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriverInterface;
+use Sammyjo20\SaloonCachePlugin\Drivers\LaravelCacheDriverInterface;
 use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
 
@@ -23,9 +23,9 @@ class LaravelCachedUserRequest extends SaloonRequest
         return '/user';
     }
 
-    public function cacheDriver(): CacheDriver
+    public function cacheDriver(): CacheDriverInterface
     {
-        return new LaravelCacheDriver(Cache::store('file'));
+        return new LaravelCacheDriverInterface(Cache::store('file'));
     }
 
     public function cacheTTLInSeconds(): int

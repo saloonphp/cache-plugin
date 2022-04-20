@@ -2,47 +2,45 @@
 
 namespace Sammyjo20\SaloonCachePlugin\Drivers;
 
-use Psr\SimpleCache\CacheInterface;
+use League\Flysystem\Filesystem;
+use League\Flysystem\UnableToReadFile;
 use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
+use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriverInterface;
 
-/**
- * PSR-16 Cache Driver
- */
-class SimpleCacheDriver implements CacheDriver
+class FlysystemDriverInterface implements CacheDriverInterface
 {
     /**
-     * @param CacheInterface $store
+     * @param Filesystem $store
      */
     public function __construct(
-        protected CacheInterface $store,
+        protected Filesystem $store,
     ) {
         //
     }
 
     /**
-     * Store the cached response.
-     *
      * @param string $cacheKey
      * @param CachedResponse $response
      * @return void
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \League\Flysystem\FilesystemException
      */
     public function set(string $cacheKey, CachedResponse $response): void
     {
-        $this->store->set($cacheKey, serialize($response), $response->getExpiry()->diffInSeconds());
+        $this->store->write($cacheKey, serialize($response));
     }
 
     /**
-     * Get the cache key from storage
-     *
      * @param string $cacheKey
      * @return CachedResponse|null
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \League\Flysystem\FilesystemException
      */
     public function get(string $cacheKey): ?CachedResponse
     {
-        $data = $this->store->get($cacheKey, null);
+        try {
+            $data = $this->store->read($cacheKey);
+        } catch (UnableToReadFile $exception) {
+            return null;
+        }
 
         if (empty($data)) {
             return null;
@@ -52,14 +50,16 @@ class SimpleCacheDriver implements CacheDriver
     }
 
     /**
-     * Remove the cached response from storage
-     *
      * @param string $cacheKey
      * @return void
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \League\Flysystem\FilesystemException
      */
     public function delete(string $cacheKey): void
     {
-        $this->store->delete($cacheKey);
+        try {
+            $this->store->delete($cacheKey);
+        } catch (UnableToReadFile $exception) {
+            //
+        }
     }
 }

@@ -6,8 +6,8 @@ use League\Flysystem\Filesystem;
 use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
-use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
+use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriverInterface;
+use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriverInterface;
 use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
 use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
 
@@ -24,9 +24,9 @@ class ShortLifeCachedUserRequest extends SaloonRequest
         return '/user';
     }
 
-    public function cacheDriver(): CacheDriver
+    public function cacheDriver(): CacheDriverInterface
     {
-        return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
+        return new FlysystemDriverInterface(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }
 
     public function cacheTTLInSeconds(): int

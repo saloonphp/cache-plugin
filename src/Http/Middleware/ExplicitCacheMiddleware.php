@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Promise\FulfilledPromise;
 use Sammyjo20\Saloon\Http\SaloonRequest;
 use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
+use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriverInterface;
 
 class ExplicitCacheMiddleware
 {
@@ -22,9 +22,9 @@ class ExplicitCacheMiddleware
     /**
      * The cache driver used for caching.
      *
-     * @var CacheDriver
+     * @var CacheDriverInterface
      */
-    protected CacheDriver $cacheDriver;
+    protected CacheDriverInterface $cacheDriver;
 
     /**
      * The TTL in seconds.
@@ -34,13 +34,22 @@ class ExplicitCacheMiddleware
     protected int $cacheTTL;
 
     /**
-     * @param SaloonRequest $request
+     * Should the existing cache be invalidated?
+     *
+     * @var bool
      */
-    public function __construct(SaloonRequest $request)
+    protected bool $invalidateCache = false;
+
+    /**
+     * @param SaloonRequest $request
+     * @param bool $invalidateCache
+     */
+    public function __construct(SaloonRequest $request, bool $invalidateCache = false)
     {
         $this->request = $request;
         $this->cacheDriver = $request->cacheDriver();
         $this->cacheTTL = $request->cacheTTLInSeconds();
+        $this->invalidateCache = $invalidateCache;
     }
 
     /**
@@ -62,7 +71,7 @@ class ExplicitCacheMiddleware
             // If the file is valid, then we should return the promise here.
 
             if (isset($cacheFile)) {
-                if ($cacheFile->isValid()) {
+                if ($this->invalidateCache === false && $cacheFile->isValid()) {
                     return new FulfilledPromise($cacheFile->getResponse()->withHeader('X-Saloon-Cache', 'Cached'));
                 }
 

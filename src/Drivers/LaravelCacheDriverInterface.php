@@ -4,9 +4,9 @@ namespace Sammyjo20\SaloonCachePlugin\Drivers;
 
 use Illuminate\Contracts\Cache\Repository;
 use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
+use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriverInterface;
 
-class LaravelCacheDriver implements CacheDriver
+class LaravelCacheDriverInterface implements CacheDriverInterface
 {
     /**
      * @param Repository $store

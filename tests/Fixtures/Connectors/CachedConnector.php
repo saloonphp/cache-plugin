@@ -5,8 +5,8 @@ namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors;
 use League\Flysystem\Filesystem;
 use Sammyjo20\Saloon\Http\SaloonConnector;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriver;
-use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
+use Sammyjo20\SaloonCachePlugin\Interfaces\CacheDriverInterface;
+use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriverInterface;
 use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
 
 class CachedConnector extends SaloonConnector
@@ -18,9 +18,9 @@ class CachedConnector extends SaloonConnector
         return testApi();
     }
 
-    public function cacheDriver(): CacheDriver
+    public function cacheDriver(): CacheDriverInterface
     {
-        return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
+        return new FlysystemDriverInterface(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }
 
     public function cacheTTLInSeconds(): int
