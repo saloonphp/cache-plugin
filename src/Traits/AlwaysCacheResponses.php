@@ -85,9 +85,10 @@ trait AlwaysCacheResponses
     protected function cacheKey(SaloonRequest $request, array $headers): string
     {
         $requestUrl = $request->getFullRequestUrl();
+        $requestQuery = $request->getQuery();
         $className = get_class($request);
 
-        return json_encode(compact('requestUrl', 'className', 'headers'), JSON_THROW_ON_ERROR);
+        return json_encode(compact('requestUrl', 'requestQuery', 'className', 'headers'), JSON_THROW_ON_ERROR);
     }
 
     /**

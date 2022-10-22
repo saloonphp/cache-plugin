@@ -91,6 +91,35 @@ test('a custom cache key can be provided on the response', function () use ($fil
     expect($filesystem->fileExists($hash))->toBeTrue();
 });
 
+test('query parameters are used in the cache key', function () use ($filesystem) {
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+        MockResponse::make(['name' => 'Sam']),
+        MockResponse::make(['name' => 'Sam']),
+    ]);
+
+    $requestA = new CachedUserRequest();
+    $requestA->addQuery('name', 'Sam');
+    $responseA = $requestA->send($mockClient);
+
+    expect($responseA->isCached())->toBeFalse();
+    expect($responseA->json())->toEqual(['name' => 'Sam']);
+    expect($responseA->status())->toEqual(200);
+
+    $requestB = new CachedUserRequest();
+    $requestB->addQuery('name', 'Sam');
+    $responseB = $requestB->send($mockClient);
+
+    expect($responseB->isCached())->toBeTrue();
+    expect($responseB->json())->toEqual(['name' => 'Sam']);
+    expect($responseB->status())->toEqual(200);
+
+    $requestC = new CachedUserRequest();
+    $responseC = $requestC->send($mockClient);
+
+    expect($responseC->isCached())->toBeFalse();
+});
+
 test('the generation of the custom key can be overwritten', function () use ($filesystem) {
     $mockClient = new MockClient([
         MockResponse::make(['name' => 'Sam']),
