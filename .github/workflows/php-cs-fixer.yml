@@ -2,8 +2,9 @@ name: Code Style
 
 on:
   push:
-    branches: [ main ]
-
+    branches:
+      - 'v1'
+        
 jobs:
   php-cs-fixer:
     runs-on: ubuntu-latest
