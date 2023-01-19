@@ -1,10 +1,10 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Interfaces;
+namespace Saloon\CachePlugin\Contracts;
 
-use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
+use Saloon\CachePlugin\Data\CachedResponse;
 
-interface DriverInterface
+interface Driver
 {
     /**
      * Store the cached response on the driver.

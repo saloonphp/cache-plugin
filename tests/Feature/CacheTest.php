@@ -1,16 +1,17 @@
 <?php
 
 use League\Flysystem\Filesystem;
-use Sammyjo20\Saloon\Http\MockResponse;
-use Sammyjo20\Saloon\Clients\MockClient;
+use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
+use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Faking\MockClient;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedPostRequest;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\ShortLifeCachedUserRequest;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\AdvancedCustomKeyCachedUserRequest;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests\CachedUserRequestOnCachedConnector;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedPostRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\ShortLifeCachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\AdvancedCustomKeyCachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestOnCachedConnector;
 
 $filesystem = new Filesystem(new LocalFilesystemAdapter(cachePath()));
 
@@ -24,8 +25,10 @@ test('a request with the AlwaysCachesRequests trait will cache the response', fu
         MockResponse::make(['name' => 'Gareth']),
     ]);
 
-    $requestA = new CachedUserRequest();
+    $requestA = TestConnector::make()->send(new CachedUserRequest);
     $responseA = $requestA->send($mockClient);
+
+    dd($responseA);
 
     expect($responseA->isCached())->toBeFalse();
     expect($responseA->json())->toEqual(['name' => 'Sam']);

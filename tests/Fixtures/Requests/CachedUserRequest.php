@@ -1,30 +1,29 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests;
+namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
 use League\Flysystem\Filesystem;
-use Sammyjo20\Saloon\Constants\Saloon;
-use Sammyjo20\Saloon\Http\SaloonRequest;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
-use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Contracts\Cacheable;
+use Saloon\CachePlugin\Drivers\FlysystemDriver;
+use Saloon\CachePlugin\Traits\AlwaysCacheResponses;
+use Saloon\CachePlugin\Traits\HasCaching;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
 
-class CachedUserRequest extends SaloonRequest
+class CachedUserRequest extends Request implements Cacheable
 {
-    use AlwaysCacheResponses;
+    use HasCaching;
 
-    protected ?string $connector = TestConnector::class;
+    protected Method $method = Method::GET;
 
-    protected ?string $method = Saloon::GET;
-
-    public function defineEndpoint(): string
+    public function resolveEndpoint(): string
     {
         return '/user';
     }
 
-    public function cacheDriver(): DriverInterface
+    public function cacheDriver(): Driver
     {
         return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }

@@ -1,14 +1,14 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Http\Middleware;
+namespace Saloon\CachePlugin\Http\Middleware;
 
 use Carbon\CarbonImmutable;
+use GuzzleHttp\Promise\FulfilledPromise;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Promise\FulfilledPromise;
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Data\CachedResponse;
 use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
 
 class ExplicitCacheMiddleware
 {
@@ -22,9 +22,9 @@ class ExplicitCacheMiddleware
     /**
      * The cache driver used for caching.
      *
-     * @var DriverInterface
+     * @var Driver
      */
-    protected DriverInterface $cacheDriver;
+    protected Driver $cacheDriver;
 
     /**
      * The TTL in seconds.

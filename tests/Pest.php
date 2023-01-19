@@ -1,6 +1,6 @@
 <?php
 
-use Sammyjo20\SaloonCachePlugin\Tests\LaravelTestCase;
+use Saloon\CachePlugin\Tests\LaravelTestCase;
 
 /*
 |--------------------------------------------------------------------------

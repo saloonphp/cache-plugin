@@ -1,12 +1,12 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Traits;
+namespace Saloon\CachePlugin\Traits;
 
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Http\Middleware\ExplicitCacheMiddleware;
 use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
 use Sammyjo20\Saloon\Http\SaloonResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
-use Sammyjo20\SaloonCachePlugin\Http\Middleware\ExplicitCacheMiddleware;
 
 trait AlwaysCacheResponses
 {
@@ -146,7 +146,7 @@ trait AlwaysCacheResponses
      *
      * @return mixed
      */
-    abstract public function cacheDriver(): DriverInterface;
+    abstract public function cacheDriver(): Driver;
 
     /**
      * Define the cache TTL (Time-to-live) in seconds.

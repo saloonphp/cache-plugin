@@ -1,14 +1,14 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests;
+namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Drivers\SimpleCacheDriver;
+use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
+use Saloon\CachePlugin\Tests\Fixtures\Stores\ArrayCache;
+use Saloon\CachePlugin\Traits\AlwaysCacheResponses;
 use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\SaloonCachePlugin\Drivers\SimpleCacheDriver;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
-use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Stores\ArrayCache;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
 
 class SimpleCachedUserRequest extends SaloonRequest
 {
@@ -28,7 +28,7 @@ class SimpleCachedUserRequest extends SaloonRequest
         //
     }
 
-    public function cacheDriver(): DriverInterface
+    public function cacheDriver(): Driver
     {
         return new SimpleCacheDriver($this->cache);
     }

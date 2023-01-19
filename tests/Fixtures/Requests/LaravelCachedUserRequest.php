@@ -1,14 +1,14 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests;
+namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
 use Illuminate\Support\Facades\Cache;
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Drivers\LaravelCacheDriver;
+use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
+use Saloon\CachePlugin\Traits\AlwaysCacheResponses;
 use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\SaloonCachePlugin\Drivers\LaravelCacheDriver;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
-use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
 
 class LaravelCachedUserRequest extends SaloonRequest
 {
@@ -23,7 +23,7 @@ class LaravelCachedUserRequest extends SaloonRequest
         return '/user';
     }
 
-    public function cacheDriver(): DriverInterface
+    public function cacheDriver(): Driver
     {
         return new LaravelCacheDriver(Cache::store('file'));
     }

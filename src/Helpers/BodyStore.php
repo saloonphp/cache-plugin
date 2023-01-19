@@ -1,6 +1,6 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Helpers;
+namespace Saloon\CachePlugin\Helpers;
 
 /**
  * This object is only meant to provide a callable to `GuzzleHttp\Psr7\PumpStream`.

@@ -1,24 +1,24 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors;
+namespace Saloon\CachePlugin\Tests\Fixtures\Connectors;
 
 use League\Flysystem\Filesystem;
-use Sammyjo20\Saloon\Http\SaloonConnector;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
-use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Drivers\FlysystemDriver;
+use Saloon\CachePlugin\Traits\AlwaysCacheResponses;
+use Saloon\Http\Connector;
 
-class CachedConnector extends SaloonConnector
+class CachedConnector extends Connector
 {
     use AlwaysCacheResponses;
 
-    public function defineBaseUrl(): string
+    public function resolveBaseUrl(): string
     {
         return testApi();
     }
 
-    public function cacheDriver(): DriverInterface
+    public function cacheDriver(): Driver
     {
         return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }

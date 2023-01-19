@@ -37,4 +37,8 @@ return $config->setRules([
     'return_type_declaration' => [
         'space_before' => 'none'
     ],
+    'declare_strict_types' => true,
+    'blank_line_after_opening_tag' => true,
+    'single_import_per_statement' => true,
+    'mb_str_functions' => true,
 ])->setFinder($finder);

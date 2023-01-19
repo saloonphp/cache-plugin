@@ -1,15 +1,15 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Drivers;
+namespace Saloon\CachePlugin\Drivers;
 
 use Psr\SimpleCache\CacheInterface;
-use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Data\CachedResponse;
 
 /**
  * PSR-16 Cache Driver
  */
-class SimpleCacheDriver implements DriverInterface
+class SimpleCacheDriver implements Driver
 {
     /**
      * @param CacheInterface $store

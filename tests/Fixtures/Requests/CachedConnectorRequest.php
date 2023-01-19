@@ -1,10 +1,10 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests;
+namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
 use Sammyjo20\Saloon\Constants\Saloon;
 use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\CachedConnector;
+use Saloon\CachePlugin\Tests\Fixtures\Connectors\CachedConnector;
 
 class CachedConnectorRequest extends SaloonRequest
 {

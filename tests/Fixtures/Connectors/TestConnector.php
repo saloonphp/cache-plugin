@@ -1,12 +1,12 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors;
+namespace Saloon\CachePlugin\Tests\Fixtures\Connectors;
 
-use Sammyjo20\Saloon\Http\SaloonConnector;
+use Saloon\Http\Connector;
 
-class TestConnector extends SaloonConnector
+class TestConnector extends Connector
 {
-    public function defineBaseUrl(): string
+    public function resolveBaseUrl(): string
     {
         return testApi();
     }
