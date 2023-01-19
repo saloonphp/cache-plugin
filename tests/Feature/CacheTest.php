@@ -19,14 +19,13 @@ beforeEach(function () use ($filesystem) {
     $filesystem->deleteDirectory('/');
 });
 
-test('a request with the AlwaysCachesRequests trait will cache the response', function () {
+test('a request with the HasCaching trait will cache the response', function () {
     $mockClient = new MockClient([
         MockResponse::make(['name' => 'Sam']),
         MockResponse::make(['name' => 'Gareth']),
     ]);
 
-    $requestA = TestConnector::make()->send(new CachedUserRequest);
-    $responseA = $requestA->send($mockClient);
+    $responseA = TestConnector::make()->send(new CachedUserRequest, $mockClient);
 
     dd($responseA);
 

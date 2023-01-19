@@ -16,5 +16,5 @@ interface Cacheable
      *
      * @return int
      */
-    public function defineCacheExpiry(): int;
+    public function cacheExpiryInSeconds(): int;
 }

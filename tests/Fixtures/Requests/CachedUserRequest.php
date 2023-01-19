@@ -16,19 +16,39 @@ class CachedUserRequest extends Request implements Cacheable
 {
     use HasCaching;
 
+    /**
+     * Method
+     *
+     * @var \Saloon\Enums\Method
+     */
     protected Method $method = Method::GET;
 
+    /**
+     * Resolve the API endpoint
+     *
+     * @return string
+     */
     public function resolveEndpoint(): string
     {
         return '/user';
     }
 
-    public function cacheDriver(): Driver
+    /**
+     * Resolve the cache driver
+     *
+     * @return \Saloon\CachePlugin\Contracts\Driver
+     */
+    public function resolveCacheDriver(): Driver
     {
         return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }
 
-    public function cacheTTLInSeconds(): int
+    /**
+     * Define the cache expiry in seconds
+     *
+     * @return int
+     */
+    public function cacheExpiryInSeconds(): int
     {
         return 60;
     }
