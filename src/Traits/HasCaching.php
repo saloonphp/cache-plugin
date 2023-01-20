@@ -6,6 +6,7 @@ use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Exceptions\HasCachingException;
 use Saloon\CachePlugin\Http\Middleware\CacheMiddleware;
 use Saloon\Contracts\PendingRequest;
+use Saloon\Enums\Method;
 
 trait HasCaching
 {
@@ -18,6 +19,10 @@ trait HasCaching
      */
     public function bootHasCaching(PendingRequest $pendingRequest): void
     {
+        if (! in_array($pendingRequest->getMethod(), [Method::GET, Method::OPTIONS], true)) {
+            return;
+        }
+
         $request = $pendingRequest->getRequest();
         $connector = $pendingRequest->getConnector();
 
@@ -38,7 +43,6 @@ trait HasCaching
 
         $pendingRequest->middleware()->onRequest(
             closure: new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey()),
-            prepend: true,
         );
     }
 

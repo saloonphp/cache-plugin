@@ -3,10 +3,11 @@
 namespace Saloon\CachePlugin\Http\Middleware;
 
 use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Data\CachedResponse;
 use Saloon\CachePlugin\Helpers\CacheKeyHelper;
 use Saloon\Contracts\PendingRequest;
 use Saloon\Contracts\RequestMiddleware;
-use Saloon\Contracts\Response;
+use Saloon\Contracts\SimulatedResponsePayload;
 
 class CacheMiddleware implements RequestMiddleware
 {
@@ -18,8 +19,8 @@ class CacheMiddleware implements RequestMiddleware
      * @param string|null $cacheKey
      */
     public function __construct(
-        protected Driver $driver,
-        protected int $ttl,
+        protected Driver  $driver,
+        protected int     $ttl,
         protected ?string $cacheKey,
     )
     {
@@ -30,37 +31,42 @@ class CacheMiddleware implements RequestMiddleware
      * Handle the middleware
      *
      * @param \Saloon\Contracts\PendingRequest $pendingRequest
-     * @return void
+     * @return \Saloon\Contracts\SimulatedResponsePayload|null
      * @throws \JsonException
      */
-    public function __invoke(PendingRequest $pendingRequest): void
+    public function __invoke(PendingRequest $pendingRequest): ?SimulatedResponsePayload
     {
         $driver = $this->driver;
         $cacheKey = hash('sha256', $this->cacheKey ?? CacheKeyHelper::create($pendingRequest));
 
-        $cacheFile = $driver->get($cacheKey);
+        $cachedResponse = $driver->get($cacheKey);
 
-        if (isset($cacheFile)) {
-            //
+        // If we have found a cached response on the driver, then we will
+        // check if the cached response hasn't expired.
+
+        if ($cachedResponse instanceof CachedResponse) {
+            // If the cached response is still active, we will return
+            // the SimulatedResponsePayload here.
+
+            if ($cachedResponse->hasNotExpired()) {
+                return $cachedResponse->getSimulatedResponsePayload();
+            }
+
+            // However if it has expired we will delete it and register
+            // the CacheRecorderMiddleware.
+
+            $driver->delete($cacheKey);
         }
 
-        $pendingRequest->middleware()->onResponse(function (Response $response) {
-            dd('yo', $response);
-        });
+        // Register the CacheRecorderMiddleware which will record the response
+        // and store it on the cache driver for next time. We'll also use
+        // the prepend option, so it runs first.
 
-        dd('not set');
+        $pendingRequest->middleware()->onResponse(
+            closure: new CacheRecorderMiddleware($driver, $this->ttl, $cacheKey),
+            prepend: true,
+        );
 
-        // Todo: Create a checksum of the current request being used and check if it exists
-        // Todo: When it exists, return it
-        // Todo: When it has expired, delete it
-        // Todo: When it does not exist use the RequestRecorder class to record a request
-
-        // $recordedResponse = ResponseRecorder::record($response)
-        // $recordedResponse->toFile();
-
-        // To convert back: $recordedResponse = RecordedResponse::fromFile($contents);
-        // new CachedResponse($recordedResponse->data, $recordedResponse->statusCode, $recordedResponse->headers)
-
-        dd('yo!', $this->driver, $this->ttl);
+        return null;
     }
 }

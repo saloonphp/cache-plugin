@@ -10,11 +10,11 @@ interface Driver
     /**
      * Store the cached response on the driver.
      *
-     * @param string $cacheKey
-     * @param RecordedResponse $response
+     * @param string $key
+     * @param CachedResponse $cachedResponse
      * @return void
      */
-    public function set(string $cacheKey, RecordedResponse $response): void;
+    public function set(string $key, CachedResponse $cachedResponse): void;
 
     /**
      * Get the cached response from the driver.
@@ -22,7 +22,7 @@ interface Driver
      * @param string $cacheKey
      * @return RecordedResponse|null
      */
-    public function get(string $cacheKey): ?RecordedResponse;
+    public function get(string $cacheKey): ?CachedResponse;
 
     /**
      * Delete the cached response.

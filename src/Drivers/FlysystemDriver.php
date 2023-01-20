@@ -6,11 +6,14 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\UnableToReadFile;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Data\CachedResponse;
+use Saloon\Data\RecordedResponse;
 
 class FlysystemDriver implements Driver
 {
     /**
-     * @param Filesystem $store
+     * Constructor
+     *
+     * @param \League\Flysystem\Filesystem $store
      */
     public function __construct(
         protected Filesystem $store,
@@ -19,19 +22,23 @@ class FlysystemDriver implements Driver
     }
 
     /**
-     * @param string $cacheKey
-     * @param CachedResponse $response
+     * Store the response
+     *
+     * @param string $key
+     * @param \Saloon\CachePlugin\Data\CachedResponse $cachedCachedCachedResponse
      * @return void
      * @throws \League\Flysystem\FilesystemException
      */
-    public function set(string $cacheKey, CachedResponse $response): void
+    public function set(string $key, CachedResponse $cachedCachedCachedResponse): void
     {
-        $this->store->write($cacheKey, serialize($response));
+        $this->store->write($key, serialize($cachedCachedCachedResponse));
     }
 
     /**
+     * Retrieve the recorded response
+     *
      * @param string $cacheKey
-     * @return CachedResponse|null
+     * @return \Saloon\CachePlugin\Data\CachedResponse|null
      * @throws \League\Flysystem\FilesystemException
      */
     public function get(string $cacheKey): ?CachedResponse
@@ -50,6 +57,8 @@ class FlysystemDriver implements Driver
     }
 
     /**
+     * Delete the cached response
+     *
      * @param string $cacheKey
      * @return void
      * @throws \League\Flysystem\FilesystemException

@@ -27,13 +27,14 @@ test('a request with the HasCaching trait will cache the response', function () 
 
     $responseA = TestConnector::make()->send(new CachedUserRequest, $mockClient);
 
-    dd($responseA);
-
     expect($responseA->isCached())->toBeFalse();
     expect($responseA->json())->toEqual(['name' => 'Sam']);
 
-    $requestB = new CachedUserRequest();
-    $responseB = $requestB->send($mockClient);
+    $responseB = TestConnector::make()->send(new CachedUserRequest, $mockClient);
+
+    // Todo: Work out what we're going to do with the MockResponse middleware overwriting the cache...  
+
+    dd($responseB->json());
 
     expect($responseB->isCached())->toBeTrue();
     expect($responseB->header('X-Saloon-Cache'))->toEqual('Cached');

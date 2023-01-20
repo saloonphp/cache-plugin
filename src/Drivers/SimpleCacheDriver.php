@@ -23,14 +23,14 @@ class SimpleCacheDriver implements Driver
     /**
      * Store the cached response.
      *
-     * @param string $cacheKey
-     * @param CachedResponse $response
+     * @param string $key
+     * @param CachedResponse $cachedCachedResponse
      * @return void
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function set(string $cacheKey, CachedResponse $response): void
+    public function set(string $key, CachedResponse $cachedCachedResponse): void
     {
-        $this->store->set($cacheKey, serialize($response), $response->getExpiry()->diffInSeconds());
+        $this->store->set($key, serialize($cachedCachedResponse), $cachedCachedResponse->getExpiry()->diffInSeconds());
     }
 
     /**

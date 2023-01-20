@@ -18,14 +18,16 @@ class LaravelCacheDriver implements Driver
     }
 
     /**
-     * @param string $cacheKey
-     * @param CachedResponse $response
+     * @param string $key
+     * @param \Saloon\CachePlugin\Data\CachedResponse $cachedResponse
      * @return void
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function set(string $cacheKey, CachedResponse $response): void
+    public function set(string $key, CachedResponse $cachedResponse): void
     {
-        $this->store->set($cacheKey, serialize($response), $response->getExpiry()->diffInSeconds());
+        // Todo: work out diff in seconds
+
+        $this->store->set($key, serialize($cachedResponse), $cachedResponse->expiresAt->diffInSeconds());
     }
 
     /**
