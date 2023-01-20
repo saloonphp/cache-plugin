@@ -40,7 +40,7 @@ uses(LaravelTestCase::class)->in('Feature/Laravel');
 
 function testApi()
 {
-    return 'https://tests.saloon.dev';
+    return 'https://tests.saloon.dev/api';
 }
 
 function cachePath()

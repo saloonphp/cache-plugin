@@ -19,26 +19,72 @@ beforeEach(function () use ($filesystem) {
     $filesystem->deleteDirectory('/');
 });
 
+test('a request with the HasCaching trait will cache the response with a real request', function () {
+    $responseA = TestConnector::make()->send(new CachedUserRequest);
+
+    $responseBody = [
+        'name' => 'Sammyjo20',
+        'actual_name' => 'Sam',
+        'twitter' => '@carre_sam'
+    ];
+
+    expect($responseA->isSimulated())->toBeFalse();
+    expect($responseA->isCached())->toBeFalse();
+    expect($responseA->json())->toEqual($responseBody);
+
+    // Now send a response without the mock middleware, and it should be cached!
+
+    $responseB = TestConnector::make()->send(new CachedUserRequest);
+
+    expect($responseB->isSimulated())->toBeTrue();
+    expect($responseB->isCached())->toBeTrue();
+    expect($responseB->json())->toEqual($responseBody);
+});
+
 test('a request with the HasCaching trait will cache the response', function () {
     $mockClient = new MockClient([
-        MockResponse::make(['name' => 'Sam']),
-        MockResponse::make(['name' => 'Gareth']),
+        MockResponse::make(['name' => 'Sam'], 201, ['X-Howdy' => 'Yeehaw']),
     ]);
 
     $responseA = TestConnector::make()->send(new CachedUserRequest, $mockClient);
 
     expect($responseA->isCached())->toBeFalse();
+    expect($responseA->status())->toEqual(201);
     expect($responseA->json())->toEqual(['name' => 'Sam']);
+    expect($responseA->header('X-Howdy'))->toEqual('Yeehaw');
 
-    $responseB = TestConnector::make()->send(new CachedUserRequest, $mockClient);
+    // Now send a response without the mock middleware, and it should be cached!
 
-    // Todo: Work out what we're going to do with the MockResponse middleware overwriting the cache...  
+    $responseB = TestConnector::make()->send(new CachedUserRequest);
 
-    dd($responseB->json());
-
+    expect($responseB->isSimulated())->toBeTrue();
     expect($responseB->isCached())->toBeTrue();
-    expect($responseB->header('X-Saloon-Cache'))->toEqual('Cached');
+    expect($responseB->status())->toEqual(201);
     expect($responseB->json())->toEqual(['name' => 'Sam']);
+    expect($responseB->header('X-Howdy'))->toEqual('Yeehaw');
+});
+
+test('a request with the HasCaching trait will cache the response with string body', function () {
+    $mockClient = new MockClient([
+        MockResponse::make('<p>Hi</p>', 201, ['X-Howdy' => 'Yeehaw']),
+    ]);
+
+    $responseA = TestConnector::make()->send(new CachedUserRequest, $mockClient);
+
+    expect($responseA->isCached())->toBeFalse();
+    expect($responseA->status())->toEqual(201);
+    expect($responseA->body())->toEqual('<p>Hi</p>');
+    expect($responseA->header('X-Howdy'))->toEqual('Yeehaw');
+
+    // Now send a response without the mock middleware, and it should be cached!
+
+    $responseB = TestConnector::make()->send(new CachedUserRequest);
+
+    expect($responseB->isSimulated())->toBeTrue();
+    expect($responseB->isCached())->toBeTrue();
+    expect($responseB->status())->toEqual(201);
+    expect($responseB->body())->toEqual('<p>Hi</p>');
+    expect($responseB->header('X-Howdy'))->toEqual('Yeehaw');
 });
 
 test('it wont cache on anything other than GET and OPTIONS', function () {

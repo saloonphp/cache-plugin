@@ -7,6 +7,7 @@ use Saloon\CachePlugin\Data\CachedResponse;
 use Saloon\CachePlugin\Helpers\CacheKeyHelper;
 use Saloon\Contracts\PendingRequest;
 use Saloon\Contracts\RequestMiddleware;
+use Saloon\Contracts\Response;
 use Saloon\Contracts\SimulatedResponsePayload;
 
 class CacheMiddleware implements RequestMiddleware
@@ -49,6 +50,8 @@ class CacheMiddleware implements RequestMiddleware
             // the SimulatedResponsePayload here.
 
             if ($cachedResponse->hasNotExpired()) {
+                $pendingRequest->middleware()->onResponse(fn (Response $response) => $response->setCached(true));
+
                 return $cachedResponse->getSimulatedResponsePayload();
             }
 

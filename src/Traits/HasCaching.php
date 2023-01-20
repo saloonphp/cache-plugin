@@ -19,15 +19,15 @@ trait HasCaching
      */
     public function bootHasCaching(PendingRequest $pendingRequest): void
     {
-        if (! in_array($pendingRequest->getMethod(), [Method::GET, Method::OPTIONS], true)) {
-            return;
-        }
-
         $request = $pendingRequest->getRequest();
         $connector = $pendingRequest->getConnector();
 
         if (! $request instanceof Cacheable && ! $connector instanceof Cacheable) {
             throw new HasCachingException(sprintf('Your connector or request must implement %s to use the HasCaching plugin', Cacheable::class));
+        }
+
+        if (! in_array($pendingRequest->getMethod(), [Method::GET, Method::OPTIONS], true)) {
+            return;
         }
 
         $cacheDriver = $request instanceof Cacheable
