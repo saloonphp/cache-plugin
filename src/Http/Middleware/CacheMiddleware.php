@@ -69,7 +69,7 @@ class CacheMiddleware implements RequestMiddleware
         // the prepend option, so it runs first.
 
         $pendingRequest->middleware()->onResponse(
-            closure: new CacheRecorderMiddleware($driver, $this->ttl, $cacheKey),
+            callable: new CacheRecorderMiddleware($driver, $this->ttl, $cacheKey),
             prepend: true,
         );
 
