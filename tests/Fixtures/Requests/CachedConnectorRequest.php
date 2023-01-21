@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
 use Sammyjo20\Saloon\Constants\Saloon;

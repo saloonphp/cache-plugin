@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Saloon\CachePlugin\Traits;
 
-use Saloon\CachePlugin\Contracts\Driver;
-use Saloon\CachePlugin\Http\Middleware\ExplicitCacheMiddleware;
 use Sammyjo20\Saloon\Constants\Saloon;
+use Saloon\CachePlugin\Contracts\Driver;
 use Sammyjo20\Saloon\Http\SaloonRequest;
 use Sammyjo20\Saloon\Http\SaloonResponse;
+use Saloon\CachePlugin\Http\Middleware\ExplicitCacheMiddleware;
 
 trait AlwaysCacheResponses
 {

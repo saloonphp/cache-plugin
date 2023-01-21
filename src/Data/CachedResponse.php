@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Saloon\CachePlugin\Data;
 
 use DateTimeImmutable;
-use Saloon\Contracts\SimulatedResponsePayload as SimulatedResponsePayloadContract;
 use Saloon\Data\RecordedResponse;
 use Saloon\Http\Faking\SimulatedResponsePayload;
+use Saloon\Contracts\SimulatedResponsePayload as SimulatedResponsePayloadContract;
 
 class CachedResponse
 {
@@ -14,12 +16,13 @@ class CachedResponse
      *
      * @param \Saloon\Data\RecordedResponse $recordedResponse
      * @param \DateTimeImmutable $expiresAt
+     * @param int $ttl
      */
     public function __construct(
         readonly public RecordedResponse  $recordedResponse,
         readonly public DateTimeImmutable $expiresAt,
-    )
-    {
+        readonly public int $ttl,
+    ) {
         //
     }
 

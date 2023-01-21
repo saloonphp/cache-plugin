@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Saloon\CachePlugin\Helpers;
 
 use Saloon\Contracts\PendingRequest;

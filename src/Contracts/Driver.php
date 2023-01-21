@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Saloon\CachePlugin\Contracts;
 
-use Saloon\CachePlugin\Data\CachedResponse;
 use Saloon\Data\RecordedResponse;
+use Saloon\CachePlugin\Data\CachedResponse;
 
 interface Driver
 {

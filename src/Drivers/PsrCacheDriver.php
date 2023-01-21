@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Saloon\CachePlugin\Drivers;
 
 use Psr\SimpleCache\CacheInterface;
@@ -9,9 +11,11 @@ use Saloon\CachePlugin\Data\CachedResponse;
 /**
  * PSR-16 Cache Driver
  */
-class SimpleCacheDriver implements Driver
+class PsrCacheDriver implements Driver
 {
     /**
+     * Constructor
+     *
      * @param CacheInterface $store
      */
     public function __construct(
@@ -21,7 +25,7 @@ class SimpleCacheDriver implements Driver
     }
 
     /**
-     * Store the cached response.
+     * Store the cached response on the driver.
      *
      * @param string $key
      * @param CachedResponse $cachedCachedResponse
@@ -34,7 +38,7 @@ class SimpleCacheDriver implements Driver
     }
 
     /**
-     * Get the cache key from storage
+     * Get the cached response from the driver.
      *
      * @param string $cacheKey
      * @return CachedResponse|null
@@ -52,7 +56,7 @@ class SimpleCacheDriver implements Driver
     }
 
     /**
-     * Remove the cached response from storage
+     * Delete the cached response.
      *
      * @param string $cacheKey
      * @return void

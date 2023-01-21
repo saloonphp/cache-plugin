@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Saloon\CachePlugin\Http\Middleware;
 
-use Saloon\CachePlugin\Contracts\Driver;
-use Saloon\CachePlugin\Data\CachedResponse;
-use Saloon\Contracts\Response;
-use Saloon\Contracts\ResponseMiddleware;
 use Saloon\Helpers\Date;
+use Saloon\Contracts\Response;
 use Saloon\Helpers\ResponseRecorder;
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\Contracts\ResponseMiddleware;
+use Saloon\CachePlugin\Data\CachedResponse;
 
 class CacheRecorderMiddleware implements ResponseMiddleware
 {
@@ -22,8 +24,7 @@ class CacheRecorderMiddleware implements ResponseMiddleware
         protected Driver $driver,
         protected int $ttl,
         protected string $cacheKey,
-    )
-    {
+    ) {
         //
     }
 
@@ -43,7 +44,7 @@ class CacheRecorderMiddleware implements ResponseMiddleware
 
         $this->driver->set(
             key: $this->cacheKey,
-            cachedCachedCachedResponse: new CachedResponse(ResponseRecorder::record($response), $expiresAt)
+            cachedResponse: new CachedResponse(ResponseRecorder::record($response), $expiresAt, $this->ttl)
         );
     }
 }

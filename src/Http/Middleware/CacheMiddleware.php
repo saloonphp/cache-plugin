@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Saloon\CachePlugin\Http\Middleware;
 
+use Saloon\Contracts\Response;
+use Saloon\Contracts\PendingRequest;
+use Saloon\Contracts\RequestMiddleware;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Data\CachedResponse;
 use Saloon\CachePlugin\Helpers\CacheKeyHelper;
-use Saloon\Contracts\PendingRequest;
-use Saloon\Contracts\RequestMiddleware;
-use Saloon\Contracts\Response;
 use Saloon\Contracts\SimulatedResponsePayload;
 
 class CacheMiddleware implements RequestMiddleware
@@ -18,13 +20,14 @@ class CacheMiddleware implements RequestMiddleware
      * @param \Saloon\CachePlugin\Contracts\Driver $driver
      * @param int $ttl
      * @param string|null $cacheKey
+     * @param bool $invalidate
      */
     public function __construct(
         protected Driver  $driver,
         protected int     $ttl,
         protected ?string $cacheKey,
-    )
-    {
+        protected bool $invalidate = false,
+    ) {
         //
     }
 
@@ -49,7 +52,7 @@ class CacheMiddleware implements RequestMiddleware
             // If the cached response is still active, we will return
             // the SimulatedResponsePayload here.
 
-            if ($cachedResponse->hasNotExpired()) {
+            if ($this->invalidate === false && $cachedResponse->hasNotExpired()) {
                 $pendingRequest->middleware()->onResponse(fn (Response $response) => $response->setCached(true));
 
                 return $cachedResponse->getSimulatedResponsePayload();

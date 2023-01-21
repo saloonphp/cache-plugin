@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Saloon\CachePlugin\Drivers;
 
-use Illuminate\Contracts\Cache\Repository;
 use Saloon\CachePlugin\Contracts\Driver;
+use Illuminate\Contracts\Cache\Repository;
 use Saloon\CachePlugin\Data\CachedResponse;
 
 class LaravelCacheDriver implements Driver
 {
     /**
-     * @param Repository $store
+     * Constructor
+     *
+     * @param \Illuminate\Contracts\Cache\Repository $store
      */
     public function __construct(
         protected Repository $store,
@@ -18,6 +22,8 @@ class LaravelCacheDriver implements Driver
     }
 
     /**
+     * Store the cached response on the driver.
+     *
      * @param string $key
      * @param \Saloon\CachePlugin\Data\CachedResponse $cachedResponse
      * @return void
@@ -25,19 +31,19 @@ class LaravelCacheDriver implements Driver
      */
     public function set(string $key, CachedResponse $cachedResponse): void
     {
-        // Todo: work out diff in seconds
-
-        $this->store->set($key, serialize($cachedResponse), $cachedResponse->expiresAt->diffInSeconds());
+        $this->store->set($key, serialize($cachedResponse), $cachedResponse->ttl);
     }
 
     /**
+     * Get the cached response from the driver.
+     *
      * @param string $cacheKey
-     * @return CachedResponse|null
+     * @return \Saloon\CachePlugin\Data\CachedResponse|null
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function get(string $cacheKey): ?CachedResponse
     {
-        $data = $this->store->get($cacheKey, null);
+        $data = $this->store->get($cacheKey);
 
         if (empty($data)) {
             return null;
@@ -47,6 +53,8 @@ class LaravelCacheDriver implements Driver
     }
 
     /**
+     * Delete the cached response.
+     *
      * @param string $cacheKey
      * @return void
      * @throws \Psr\SimpleCache\InvalidArgumentException

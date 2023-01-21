@@ -1,15 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Saloon\CachePlugin\Traits;
 
+use Saloon\Enums\Method;
+use Saloon\Contracts\PendingRequest;
 use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Exceptions\HasCachingException;
 use Saloon\CachePlugin\Http\Middleware\CacheMiddleware;
-use Saloon\Contracts\PendingRequest;
-use Saloon\Enums\Method;
 
 trait HasCaching
 {
+    /**
+     * Is caching enabled?
+     *
+     * @var bool
+     */
+    protected bool $cachingEnabled = true;
+
+    /**
+     * Should the existing cache be invalidated?
+     *
+     * @var bool
+     */
+    protected bool $invalidateCache = false;
+
     /**
      * Boot the "HasCaching" plugin
      *
@@ -24,6 +40,10 @@ trait HasCaching
 
         if (! $request instanceof Cacheable && ! $connector instanceof Cacheable) {
             throw new HasCachingException(sprintf('Your connector or request must implement %s to use the HasCaching plugin', Cacheable::class));
+        }
+
+        if ($this->cachingEnabled === false) {
+            return;
         }
 
         if (! in_array($pendingRequest->getMethod(), [Method::GET, Method::OPTIONS], true)) {
@@ -42,7 +62,7 @@ trait HasCaching
         // of real responses for caching.
 
         $pendingRequest->middleware()->onRequest(
-            closure: new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey()),
+            closure: new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey(), $this->invalidateCache),
         );
     }
 
@@ -54,5 +74,41 @@ trait HasCaching
     protected function cacheKey(): ?string
     {
         return null;
+    }
+
+    /**
+     * Enable caching for the request.
+     *
+     * @return $this
+     */
+    public function enableCaching(): static
+    {
+        $this->cachingEnabled = true;
+
+        return $this;
+    }
+
+    /**
+     * Disable caching for the request.
+     *
+     * @return $this
+     */
+    public function disableCaching(): static
+    {
+        $this->cachingEnabled = false;
+
+        return $this;
+    }
+
+    /**
+     * Invalidate the current cache and refresh the cache.
+     *
+     * @return $this
+     */
+    public function invalidateCache(): static
+    {
+        $this->invalidateCache = true;
+
+        return $this;
     }
 }

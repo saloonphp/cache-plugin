@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use League\Flysystem\Filesystem;
-use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
-use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Faking\MockClient;
+use Saloon\Http\Faking\MockResponse;
 use League\Flysystem\Local\LocalFilesystemAdapter;
+use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
@@ -25,7 +27,7 @@ test('a request with the HasCaching trait will cache the response with a real re
     $responseBody = [
         'name' => 'Sammyjo20',
         'actual_name' => 'Sam',
-        'twitter' => '@carre_sam'
+        'twitter' => '@carre_sam',
     ];
 
     expect($responseA->isSimulated())->toBeFalse();

@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Saloon\CachePlugin\Drivers;
 
 use League\Flysystem\Filesystem;
 use League\Flysystem\UnableToReadFile;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Data\CachedResponse;
-use Saloon\Data\RecordedResponse;
 
 class FlysystemDriver implements Driver
 {
@@ -22,20 +23,20 @@ class FlysystemDriver implements Driver
     }
 
     /**
-     * Store the response
+     * Store the cached response on the driver.
      *
      * @param string $key
-     * @param \Saloon\CachePlugin\Data\CachedResponse $cachedCachedCachedResponse
+     * @param \Saloon\CachePlugin\Data\CachedResponse $cachedResponse
      * @return void
      * @throws \League\Flysystem\FilesystemException
      */
-    public function set(string $key, CachedResponse $cachedCachedCachedResponse): void
+    public function set(string $key, CachedResponse $cachedResponse): void
     {
-        $this->store->write($key, serialize($cachedCachedCachedResponse));
+        $this->store->write($key, serialize($cachedResponse));
     }
 
     /**
-     * Retrieve the recorded response
+     * Get the cached response from the driver.
      *
      * @param string $cacheKey
      * @return \Saloon\CachePlugin\Data\CachedResponse|null
