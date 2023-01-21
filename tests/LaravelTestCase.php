@@ -1,6 +1,8 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Tests;
+declare(strict_types=1);
+
+namespace Saloon\CachePlugin\Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
 

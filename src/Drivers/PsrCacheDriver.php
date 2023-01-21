@@ -1,17 +1,21 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Drivers;
+declare(strict_types=1);
+
+namespace Saloon\CachePlugin\Drivers;
 
 use Psr\SimpleCache\CacheInterface;
-use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Data\CachedResponse;
 
 /**
  * PSR-16 Cache Driver
  */
-class SimpleCacheDriver implements DriverInterface
+class PsrCacheDriver implements Driver
 {
     /**
+     * Constructor
+     *
      * @param CacheInterface $store
      */
     public function __construct(
@@ -21,20 +25,20 @@ class SimpleCacheDriver implements DriverInterface
     }
 
     /**
-     * Store the cached response.
+     * Store the cached response on the driver.
      *
-     * @param string $cacheKey
-     * @param CachedResponse $response
+     * @param string $key
+     * @param \Saloon\CachePlugin\Data\CachedResponse $cachedResponse
      * @return void
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function set(string $cacheKey, CachedResponse $response): void
+    public function set(string $key, CachedResponse $cachedResponse): void
     {
-        $this->store->set($cacheKey, serialize($response), $response->getExpiry()->diffInSeconds());
+        $this->store->set($key, serialize($cachedResponse), $cachedResponse->ttl);
     }
 
     /**
-     * Get the cache key from storage
+     * Get the cached response from the driver.
      *
      * @param string $cacheKey
      * @return CachedResponse|null
@@ -52,7 +56,7 @@ class SimpleCacheDriver implements DriverInterface
     }
 
     /**
-     * Remove the cached response from storage
+     * Delete the cached response.
      *
      * @param string $cacheKey
      * @return void

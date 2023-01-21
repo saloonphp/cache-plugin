@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Saloon\CachePlugin\Tests\Fixtures\Connectors;
+namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
-use Saloon\Http\Connector;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
 use League\Flysystem\Filesystem;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Traits\HasCaching;
@@ -12,13 +13,15 @@ use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Drivers\FlysystemDriver;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 
-class CachedConnector extends Connector implements Cacheable
+class ShortLivedCachedUserRequest extends Request implements Cacheable
 {
     use HasCaching;
 
-    public function resolveBaseUrl(): string
+    protected Method $method = Method::GET;
+
+    public function resolveEndpoint(): string
     {
-        return testApi();
+        return '/user';
     }
 
     public function resolveCacheDriver(): Driver
@@ -28,6 +31,6 @@ class CachedConnector extends Connector implements Cacheable
 
     public function cacheExpiryInSeconds(): int
     {
-        return 60;
+        return 2;
     }
 }

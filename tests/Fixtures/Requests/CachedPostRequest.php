@@ -1,27 +1,28 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests;
+declare(strict_types=1);
 
+namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
+
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
 use League\Flysystem\Filesystem;
-use Sammyjo20\Saloon\Constants\Saloon;
-use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\Saloon\Traits\Plugins\HasJsonBody;
+use Saloon\Contracts\Body\HasBody;
+use Saloon\Traits\Body\HasJsonBody;
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Traits\HasCaching;
+use Saloon\CachePlugin\Contracts\Cacheable;
+use Saloon\CachePlugin\Drivers\FlysystemDriver;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Sammyjo20\SaloonCachePlugin\Drivers\FlysystemDriver;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
-use Sammyjo20\SaloonCachePlugin\Traits\AlwaysCacheResponses;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\TestConnector;
 
-class CachedPostRequest extends SaloonRequest
+class CachedPostRequest extends Request implements Cacheable, HasBody
 {
-    use AlwaysCacheResponses;
+    use HasCaching;
     use HasJsonBody;
 
-    protected ?string $connector = TestConnector::class;
+    protected Method $method = Method::POST;
 
-    protected ?string $method = Saloon::POST;
-
-    public function defineEndpoint(): string
+    public function resolveEndpoint(): string
     {
         return '/data';
     }
@@ -33,12 +34,12 @@ class CachedPostRequest extends SaloonRequest
         ];
     }
 
-    public function cacheDriver(): DriverInterface
+    public function resolveCacheDriver(): Driver
     {
         return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }
 
-    public function cacheTTLInSeconds(): int
+    public function cacheExpiryInSeconds(): int
     {
         return 60;
     }

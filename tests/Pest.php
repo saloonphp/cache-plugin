@@ -1,6 +1,8 @@
 <?php
 
-use Sammyjo20\SaloonCachePlugin\Tests\LaravelTestCase;
+declare(strict_types=1);
+
+use Saloon\CachePlugin\Tests\LaravelTestCase;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +42,7 @@ uses(LaravelTestCase::class)->in('Feature/Laravel');
 
 function testApi()
 {
-    return 'https://tests.saloon.dev';
+    return 'https://tests.saloon.dev/api';
 }
 
 function cachePath()

@@ -1,15 +1,19 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Drivers;
+declare(strict_types=1);
 
+namespace Saloon\CachePlugin\Drivers;
+
+use Saloon\CachePlugin\Contracts\Driver;
 use Illuminate\Contracts\Cache\Repository;
-use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
+use Saloon\CachePlugin\Data\CachedResponse;
 
-class LaravelCacheDriver implements DriverInterface
+class LaravelCacheDriver implements Driver
 {
     /**
-     * @param Repository $store
+     * Constructor
+     *
+     * @param \Illuminate\Contracts\Cache\Repository $store
      */
     public function __construct(
         protected Repository $store,
@@ -18,24 +22,28 @@ class LaravelCacheDriver implements DriverInterface
     }
 
     /**
-     * @param string $cacheKey
-     * @param CachedResponse $response
+     * Store the cached response on the driver.
+     *
+     * @param string $key
+     * @param \Saloon\CachePlugin\Data\CachedResponse $cachedResponse
      * @return void
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function set(string $cacheKey, CachedResponse $response): void
+    public function set(string $key, CachedResponse $cachedResponse): void
     {
-        $this->store->set($cacheKey, serialize($response), $response->getExpiry()->diffInSeconds());
+        $this->store->set($key, serialize($cachedResponse), $cachedResponse->ttl);
     }
 
     /**
+     * Get the cached response from the driver.
+     *
      * @param string $cacheKey
-     * @return CachedResponse|null
+     * @return \Saloon\CachePlugin\Data\CachedResponse|null
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function get(string $cacheKey): ?CachedResponse
     {
-        $data = $this->store->get($cacheKey, null);
+        $data = $this->store->get($cacheKey);
 
         if (empty($data)) {
             return null;
@@ -45,6 +53,8 @@ class LaravelCacheDriver implements DriverInterface
     }
 
     /**
+     * Delete the cached response.
+     *
      * @param string $cacheKey
      * @return void
      * @throws \Psr\SimpleCache\InvalidArgumentException

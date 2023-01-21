@@ -1,18 +1,17 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Requests;
+declare(strict_types=1);
 
-use Sammyjo20\Saloon\Constants\Saloon;
-use Sammyjo20\Saloon\Http\SaloonRequest;
-use Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Connectors\CachedConnector;
+namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
-class CachedConnectorRequest extends SaloonRequest
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
+
+class CachedConnectorRequest extends Request
 {
-    protected ?string $connector = CachedConnector::class;
+    protected Method $method = Method::GET;
 
-    protected ?string $method = Saloon::GET;
-
-    public function defineEndpoint(): string
+    public function resolveEndpoint(): string
     {
         return '/user';
     }

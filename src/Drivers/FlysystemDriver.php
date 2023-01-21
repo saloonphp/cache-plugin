@@ -1,16 +1,20 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Drivers;
+declare(strict_types=1);
+
+namespace Saloon\CachePlugin\Drivers;
 
 use League\Flysystem\Filesystem;
 use League\Flysystem\UnableToReadFile;
-use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
-use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
+use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Data\CachedResponse;
 
-class FlysystemDriver implements DriverInterface
+class FlysystemDriver implements Driver
 {
     /**
-     * @param Filesystem $store
+     * Constructor
+     *
+     * @param \League\Flysystem\Filesystem $store
      */
     public function __construct(
         protected Filesystem $store,
@@ -19,19 +23,23 @@ class FlysystemDriver implements DriverInterface
     }
 
     /**
-     * @param string $cacheKey
-     * @param CachedResponse $response
+     * Store the cached response on the driver.
+     *
+     * @param string $key
+     * @param \Saloon\CachePlugin\Data\CachedResponse $cachedResponse
      * @return void
      * @throws \League\Flysystem\FilesystemException
      */
-    public function set(string $cacheKey, CachedResponse $response): void
+    public function set(string $key, CachedResponse $cachedResponse): void
     {
-        $this->store->write($cacheKey, serialize($response));
+        $this->store->write($key, serialize($cachedResponse));
     }
 
     /**
+     * Get the cached response from the driver.
+     *
      * @param string $cacheKey
-     * @return CachedResponse|null
+     * @return \Saloon\CachePlugin\Data\CachedResponse|null
      * @throws \League\Flysystem\FilesystemException
      */
     public function get(string $cacheKey): ?CachedResponse
@@ -50,6 +58,8 @@ class FlysystemDriver implements DriverInterface
     }
 
     /**
+     * Delete the cached response
+     *
      * @param string $cacheKey
      * @return void
      * @throws \League\Flysystem\FilesystemException

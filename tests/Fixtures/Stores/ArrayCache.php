@@ -1,6 +1,8 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Tests\Fixtures\Stores;
+declare(strict_types=1);
+
+namespace Saloon\CachePlugin\Tests\Fixtures\Stores;
 
 use Psr\SimpleCache\CacheInterface;
 

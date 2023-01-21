@@ -1,105 +1,64 @@
 <?php
 
-namespace Sammyjo20\SaloonCachePlugin\Data;
+declare(strict_types=1);
 
-use GuzzleHttp\Psr7\Utils;
-use Carbon\CarbonInterface;
-use GuzzleHttp\Psr7\PumpStream;
-use Psr\Http\Message\ResponseInterface;
-use Sammyjo20\SaloonCachePlugin\Helpers\BodyStore;
+namespace Saloon\CachePlugin\Data;
+
+use DateTimeImmutable;
+use Saloon\Data\RecordedResponse;
+use Saloon\Http\Faking\SimulatedResponsePayload;
+use Saloon\Contracts\SimulatedResponsePayload as SimulatedResponsePayloadContract;
 
 class CachedResponse
 {
     /**
-     * @param CarbonInterface $expiry
-     * @param ResponseInterface $response
+     * Constructor
+     *
+     * @param \Saloon\Data\RecordedResponse $recordedResponse
+     * @param \DateTimeImmutable $expiresAt
+     * @param int $ttl
      */
     public function __construct(
-        protected CarbonInterface $expiry,
-        protected ResponseInterface $response,
+        readonly public RecordedResponse  $recordedResponse,
+        readonly public DateTimeImmutable $expiresAt,
+        readonly public int $ttl,
     ) {
         //
     }
 
     /**
-     * Check if the cached response is valid.
+     * Check if the response has expired.
      *
      * @return bool
      */
-    public function isValid(): bool
+    public function hasExpired(): bool
     {
-        return $this->expiry->isFuture();
+        return $this->expiresAt->getTimestamp() <= (new DateTimeImmutable)->getTimestamp();
     }
 
     /**
-     * Check if the cached response is invalid.
+     * Check if the response has not expired.
      *
      * @return bool
      */
-    public function isInvalid(): bool
+    public function hasNotExpired(): bool
     {
-        return ! $this->isValid();
+        return ! $this->hasExpired();
     }
 
     /**
-     * Retrieve the response.
+     * Create a simulated response payload
      *
-     * @return ResponseInterface
+     * @return \Saloon\Contracts\SimulatedResponsePayload
      */
-    public function getResponse(): ResponseInterface
+    public function getSimulatedResponsePayload(): SimulatedResponsePayloadContract
     {
-        return $this->response;
-    }
+        $response = $this->recordedResponse;
 
-    /**
-     * The expiry datetime of the cache response.
-     *
-     * @return CarbonInterface
-     */
-    public function getExpiry(): CarbonInterface
-    {
-        return $this->expiry;
-    }
-
-    /**
-     * Handle the falling asleep of the cached response. We'll convert it into a "PumpStream" which
-     * can be converted into a stream while waking up.
-     *
-     * @return array
-     */
-    public function __sleep(): array
-    {
-        $body = $this->response->getBody();
-        $bodyData = $body->getContents();
-
-        $this->response = $this->response->withBody(
-            new PumpStream(
-                new BodyStore($bodyData),
-                [
-                    'size' => mb_strlen($bodyData),
-                ]
-            )
+        return new SimulatedResponsePayload(
+            body: $response->data,
+            status: $response->statusCode,
+            headers: $response->headers
         );
-
-        // Rewind the stream, so it is reset for the next handler
-        // reading the response
-
-        if ($body->isSeekable()) {
-            $body->rewind();
-        }
-
-        return array_keys(get_object_vars($this));
-    }
-
-    /**
-     * Handle the waking up of the class (being unserialized)
-     *
-     * @return void
-     */
-    public function __wakeup()
-    {
-        $body = $this->response->getBody();
-
-        $this->response = $this->response->withBody(Utils::streamFor($body));
     }
 }

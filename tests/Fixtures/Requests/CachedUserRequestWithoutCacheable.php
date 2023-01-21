@@ -9,11 +9,10 @@ use Saloon\Http\Request;
 use League\Flysystem\Filesystem;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Traits\HasCaching;
-use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Drivers\FlysystemDriver;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 
-class CachedUserRequest extends Request implements Cacheable
+class CachedUserRequestWithoutCacheable extends Request
 {
     use HasCaching;
 
