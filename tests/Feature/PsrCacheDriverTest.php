@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-use Sammyjo20\Saloon\Http\MockResponse;
-use Sammyjo20\Saloon\Clients\MockClient;
+use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Stores\ArrayCache;
-use Saloon\CachePlugin\Tests\Fixtures\Requests\SimpleCachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\PsrCachedUserRequest;
+use Saloon\Http\Faking\MockClient;
+use Saloon\Http\Faking\MockResponse;
 
 it('will return a cached response', function () {
     $mockClient = new MockClient([
@@ -15,17 +16,18 @@ it('will return a cached response', function () {
 
     $arrayCache = new ArrayCache();
 
-    $requestA = new SimpleCachedUserRequest($arrayCache);
-    $responseA = $requestA->send($mockClient);
+    $connector = new TestConnector;
+
+    $requestA = new PsrCachedUserRequest($arrayCache);
+    $responseA = $connector->send($requestA, $mockClient);
 
     expect($responseA->isCached())->toBeFalse();
     expect($responseA->json())->toEqual(['name' => 'Sam']);
 
-    $requestB = new SimpleCachedUserRequest($arrayCache);
-    $responseB = $requestB->send($mockClient);
+    $requestB = new PsrCachedUserRequest($arrayCache);
+    $responseB = $connector->send($requestB);
 
     expect($responseB->isCached())->toBeTrue();
-    expect($responseB->header('X-Saloon-Cache'))->toEqual('Cached');
     expect($responseB->json())->toEqual(['name' => 'Sam']);
 
     expect($arrayCache->all())->toHaveCount(1);

@@ -5,38 +5,40 @@ declare(strict_types=1);
 namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
 use League\Flysystem\Filesystem;
-use Sammyjo20\Saloon\Constants\Saloon;
+use Saloon\CachePlugin\Contracts\Cacheable;
+use Saloon\CachePlugin\Traits\HasCaching;
+use Saloon\Contracts\PendingRequest;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
 use Saloon\CachePlugin\Contracts\Driver;
-use Sammyjo20\Saloon\Http\SaloonRequest;
 use Saloon\CachePlugin\Drivers\FlysystemDriver;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Saloon\CachePlugin\Traits\AlwaysCacheResponses;
 use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
 
-class CustomKeyCachedUserRequest extends SaloonRequest
+class CustomKeyCachedUserRequest extends Request implements Cacheable
 {
-    use AlwaysCacheResponses;
+    use HasCaching;
 
     protected ?string $connector = TestConnector::class;
 
-    protected ?string $method = Saloon::GET;
+    protected Method $method = Method::GET;
 
-    public function defineEndpoint(): string
+    public function resolveEndpoint(): string
     {
         return '/user';
     }
 
-    public function cacheDriver(): Driver
+    public function resolveCacheDriver(): Driver
     {
         return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }
 
-    public function cacheTTLInSeconds(): int
+    public function cacheExpiryInSeconds(): int
     {
         return 60;
     }
 
-    public function cacheKey(SaloonRequest $request, array $headers, bool $hashKey = true): string
+    protected function cacheKey(PendingRequest $pendingRequest): ?string
     {
         return 'Howdy!';
     }

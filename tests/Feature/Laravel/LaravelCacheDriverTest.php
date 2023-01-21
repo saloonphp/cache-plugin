@@ -3,9 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Cache;
-use Sammyjo20\Saloon\Http\MockResponse;
-use Sammyjo20\Saloon\Clients\MockClient;
+use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\LaravelCachedUserRequest;
+use Saloon\Http\Faking\MockClient;
+use Saloon\Http\Faking\MockResponse;
 
 beforeEach(function () {
     Cache::store('file')->clear();
@@ -14,19 +15,19 @@ beforeEach(function () {
 it('will return a cached response', function () {
     $mockClient = new MockClient([
         MockResponse::make(['name' => 'Sam']),
-        MockResponse::make(['name' => 'Gareth']),
     ]);
 
+    $connector = new TestConnector;
+
     $requestA = new LaravelCachedUserRequest();
-    $responseA = $requestA->send($mockClient);
+    $responseA = $connector->send($requestA, $mockClient);
 
     expect($responseA->isCached())->toBeFalse();
     expect($responseA->json())->toEqual(['name' => 'Sam']);
 
     $requestB = new LaravelCachedUserRequest();
-    $responseB = $requestB->send($mockClient);
+    $responseB = $connector->send($requestB);
 
     expect($responseB->isCached())->toBeTrue();
-    expect($responseB->header('X-Saloon-Cache'))->toEqual('Cached');
     expect($responseB->json())->toEqual(['name' => 'Sam']);
 });

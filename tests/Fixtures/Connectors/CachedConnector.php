@@ -4,28 +4,29 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Tests\Fixtures\Connectors;
 
+use Saloon\CachePlugin\Contracts\Cacheable;
+use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\Http\Connector;
 use League\Flysystem\Filesystem;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Drivers\FlysystemDriver;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Saloon\CachePlugin\Traits\AlwaysCacheResponses;
 
-class CachedConnector extends Connector
+class CachedConnector extends Connector implements Cacheable
 {
-    use AlwaysCacheResponses;
+    use HasCaching;
 
     public function resolveBaseUrl(): string
     {
         return testApi();
     }
 
-    public function cacheDriver(): Driver
+    public function resolveCacheDriver(): Driver
     {
         return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }
 
-    public function cacheTTLInSeconds(): int
+    public function cacheExpiryInSeconds(): int
     {
         return 60;
     }

@@ -6,32 +6,22 @@ namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
 use League\Flysystem\Filesystem;
 use Saloon\CachePlugin\Contracts\Cacheable;
-use Saloon\CachePlugin\Traits\HasCaching;
-use Saloon\Contracts\Body\HasBody;
-use Saloon\Enums\Method;
-use Saloon\Http\Request;
-use Saloon\Traits\Body\HasJsonBody;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Drivers\FlysystemDriver;
 use League\Flysystem\Local\LocalFilesystemAdapter;
+use Saloon\CachePlugin\Traits\HasCaching;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
 
-class CachedPostRequest extends Request implements Cacheable, HasBody
+class ShortLivedCachedUserRequest extends Request implements Cacheable
 {
     use HasCaching;
-    use HasJsonBody;
 
-    protected Method $method = Method::POST;
+    protected Method $method = Method::GET;
 
     public function resolveEndpoint(): string
     {
-        return '/data';
-    }
-
-    public function defaultData(): array
-    {
-        return [
-            'name' => 'Sammy',
-        ];
+        return '/user';
     }
 
     public function resolveCacheDriver(): Driver
@@ -41,6 +31,6 @@ class CachedPostRequest extends Request implements Cacheable, HasBody
 
     public function cacheExpiryInSeconds(): int
     {
-        return 60;
+        return 2;
     }
 }

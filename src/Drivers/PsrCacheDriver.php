@@ -28,13 +28,13 @@ class PsrCacheDriver implements Driver
      * Store the cached response on the driver.
      *
      * @param string $key
-     * @param CachedResponse $cachedCachedResponse
+     * @param \Saloon\CachePlugin\Data\CachedResponse $cachedResponse
      * @return void
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function set(string $key, CachedResponse $cachedCachedResponse): void
+    public function set(string $key, CachedResponse $cachedResponse): void
     {
-        $this->store->set($key, serialize($cachedCachedResponse), $cachedCachedResponse->getExpiry()->diffInSeconds());
+        $this->store->set($key, serialize($cachedResponse), $cachedResponse->ttl);
     }
 
     /**

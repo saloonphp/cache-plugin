@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
-use Illuminate\Support\Facades\Cache;
 use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\CachePlugin\Contracts\Driver;
-use Saloon\CachePlugin\Drivers\LaravelCacheDriver;
+use Saloon\CachePlugin\Drivers\PsrCacheDriver;
+use Saloon\CachePlugin\Tests\Fixtures\Stores\ArrayCache;
 
-class LaravelCachedUserRequest extends Request implements Cacheable
+class PsrCachedUserRequest extends Request implements Cacheable
 {
     use HasCaching;
 
@@ -23,9 +23,14 @@ class LaravelCachedUserRequest extends Request implements Cacheable
         return '/user';
     }
 
+    public function __construct(protected ArrayCache $cache)
+    {
+        //
+    }
+
     public function resolveCacheDriver(): Driver
     {
-        return new LaravelCacheDriver(Cache::store('file'));
+        return new PsrCacheDriver($this->cache);
     }
 
     public function cacheExpiryInSeconds(): int

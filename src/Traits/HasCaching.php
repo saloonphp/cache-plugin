@@ -62,16 +62,17 @@ trait HasCaching
         // of real responses for caching.
 
         $pendingRequest->middleware()->onRequest(
-            closure: new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey(), $this->invalidateCache),
+            closure: new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey($pendingRequest), $this->invalidateCache),
         );
     }
 
     /**
      * Define a custom cache key
      *
+     * @param \Saloon\Contracts\PendingRequest $pendingRequest
      * @return string|null
      */
-    protected function cacheKey(): ?string
+    protected function cacheKey(PendingRequest $pendingRequest): ?string
     {
         return null;
     }
