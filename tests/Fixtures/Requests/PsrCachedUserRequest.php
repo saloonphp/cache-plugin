@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
-use Saloon\CachePlugin\Contracts\Cacheable;
-use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Traits\HasCaching;
+use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Drivers\PsrCacheDriver;
 use Saloon\CachePlugin\Tests\Fixtures\Stores\ArrayCache;
 

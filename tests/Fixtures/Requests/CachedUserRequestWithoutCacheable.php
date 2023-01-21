@@ -7,39 +7,49 @@ namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use League\Flysystem\Filesystem;
-use Saloon\Contracts\PendingRequest;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Traits\HasCaching;
-use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Drivers\FlysystemDriver;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
 
-class CustomKeyCachedUserRequest extends Request implements Cacheable
+class CachedUserRequestWithoutCacheable extends Request
 {
     use HasCaching;
 
-    protected ?string $connector = TestConnector::class;
-
+    /**
+     * Method
+     *
+     * @var \Saloon\Enums\Method
+     */
     protected Method $method = Method::GET;
 
+    /**
+     * Resolve the API endpoint
+     *
+     * @return string
+     */
     public function resolveEndpoint(): string
     {
         return '/user';
     }
 
+    /**
+     * Resolve the cache driver
+     *
+     * @return \Saloon\CachePlugin\Contracts\Driver
+     */
     public function resolveCacheDriver(): Driver
     {
         return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }
 
+    /**
+     * Define the cache expiry in seconds
+     *
+     * @return int
+     */
     public function cacheExpiryInSeconds(): int
     {
         return 60;
-    }
-
-    protected function cacheKey(PendingRequest $pendingRequest): ?string
-    {
-        return 'Howdy!';
     }
 }

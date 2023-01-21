@@ -3,17 +3,18 @@
 declare(strict_types=1);
 
 use League\Flysystem\Filesystem;
-use Saloon\CachePlugin\Tests\Fixtures\Connectors\CachedConnector;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use League\Flysystem\Local\LocalFilesystemAdapter;
+use Saloon\CachePlugin\Exceptions\HasCachingException;
 use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
+use Saloon\CachePlugin\Tests\Fixtures\Connectors\CachedConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\ShortLivedCachedUserRequest;
-use Saloon\CachePlugin\Tests\Fixtures\Requests\AdvancedCustomKeyCachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestWithoutCacheable;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestOnCachedConnector;
 
 $filesystem = new Filesystem(new LocalFilesystemAdapter(cachePath()));
@@ -304,4 +305,18 @@ test('cache can be invalidated', function () {
 
     expect($responseD->isCached())->toBeTrue();
     expect($responseD->json())->toEqual(['name' => 'Teo']);
+});
+
+test('it throws an exception if you use the HasCaching trait without the Cacheable interface', function () {
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+    ]);
+
+    $connector = new TestConnector;
+    $request = new CachedUserRequestWithoutCacheable;
+
+    $this->expectException(HasCachingException::class);
+    $this->expectExceptionMessage('Your connector or request must implement Saloon\CachePlugin\Contracts\Cacheable to use the HasCaching plugin');
+
+    $connector->send($request, $mockClient);
 });

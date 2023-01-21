@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
-use Saloon\CachePlugin\Tests\Fixtures\Stores\ArrayCache;
-use Saloon\CachePlugin\Tests\Fixtures\Requests\PsrCachedUserRequest;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
+use Saloon\CachePlugin\Tests\Fixtures\Stores\ArrayCache;
+use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\PsrCachedUserRequest;
 
 it('will return a cached response', function () {
     $mockClient = new MockClient([

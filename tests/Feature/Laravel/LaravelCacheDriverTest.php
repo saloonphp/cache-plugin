@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use Saloon\Http\Faking\MockClient;
+use Saloon\Http\Faking\MockResponse;
 use Illuminate\Support\Facades\Cache;
 use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\LaravelCachedUserRequest;
-use Saloon\Http\Faking\MockClient;
-use Saloon\Http\Faking\MockResponse;
 
 beforeEach(function () {
     Cache::store('file')->clear();
