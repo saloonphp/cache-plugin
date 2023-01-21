@@ -58,8 +58,9 @@ test('a request with the HasCaching trait will cache the response', function () 
     expect($responseA->header('X-Howdy'))->toEqual('Yeehaw');
 
     // Now send a response without the mock middleware, and it should be cached!
+    // We'll also pass the mock client in here to ensure it's being ignored
 
-    $responseB = TestConnector::make()->send(new CachedUserRequest);
+    $responseB = TestConnector::make()->send(new CachedUserRequest, $mockClient);
 
     expect($responseB->isSimulated())->toBeTrue();
     expect($responseB->isCached())->toBeTrue();

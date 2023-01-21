@@ -62,7 +62,7 @@ trait HasCaching
         // of real responses for caching.
 
         $pendingRequest->middleware()->onRequest(
-            closure: new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey($pendingRequest), $this->invalidateCache),
+            callable: new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey($pendingRequest), $this->invalidateCache),
         );
     }
 
