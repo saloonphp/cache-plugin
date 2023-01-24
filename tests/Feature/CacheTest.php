@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use League\Flysystem\Filesystem;
-use Saloon\CachePlugin\Tests\Fixtures\Requests\AllowedCachedPostRequest;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use League\Flysystem\Local\LocalFilesystemAdapter;
@@ -13,6 +12,7 @@ use Saloon\CachePlugin\Tests\Fixtures\Connectors\CachedConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\AllowedCachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\ShortLivedCachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestWithoutCacheable;
