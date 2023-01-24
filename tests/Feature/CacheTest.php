@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use League\Flysystem\Filesystem;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\AllowedCachedPostRequest;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use League\Flysystem\Local\LocalFilesystemAdapter;
@@ -107,6 +108,22 @@ test('it wont cache on anything other than GET and OPTIONS', function () {
 
     expect($responseB->isCached())->toBeFalse();
     expect($responseB->json())->toEqual(['name' => 'Gareth']);
+});
+
+test('it will cache post requests if you customise the cacheableMethods property', function () {
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+    ]);
+
+    $responseA = TestConnector::make()->send(new AllowedCachedPostRequest, $mockClient);
+
+    expect($responseA->isCached())->toBeFalse();
+    expect($responseA->json())->toEqual(['name' => 'Sam']);
+
+    $responseB = TestConnector::make()->send(new AllowedCachedPostRequest, $mockClient);
+
+    expect($responseB->isCached())->toBeTrue();
+    expect($responseB->json())->toEqual(['name' => 'Sam']);
 });
 
 test('a response will not be cached if the response was not 2xx', function () {

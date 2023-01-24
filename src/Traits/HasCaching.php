@@ -46,7 +46,7 @@ trait HasCaching
             return;
         }
 
-        if (! in_array($pendingRequest->getMethod(), [Method::GET, Method::OPTIONS], true)) {
+        if (! in_array($pendingRequest->getMethod(), $this->getCacheableMethods(), true)) {
             return;
         }
 
@@ -63,6 +63,7 @@ trait HasCaching
 
         $pendingRequest->middleware()->onRequest(
             callable: new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey($pendingRequest), $this->invalidateCache),
+            name: 'cacheMiddleware',
         );
     }
 
@@ -111,5 +112,15 @@ trait HasCaching
         $this->invalidateCache = true;
 
         return $this;
+    }
+
+    /**
+     * Define the cacheable methods that can be used
+     *
+     * @return array<\Saloon\Enums\Method>
+     */
+    protected function getCacheableMethods(): array
+    {
+        return [Method::GET, Method::OPTIONS];
     }
 }
