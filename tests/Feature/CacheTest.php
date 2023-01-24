@@ -12,6 +12,7 @@ use Saloon\CachePlugin\Tests\Fixtures\Connectors\CachedConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\AllowedCachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\ShortLivedCachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestWithoutCacheable;
@@ -107,6 +108,22 @@ test('it wont cache on anything other than GET and OPTIONS', function () {
 
     expect($responseB->isCached())->toBeFalse();
     expect($responseB->json())->toEqual(['name' => 'Gareth']);
+});
+
+test('it will cache post requests if you customise the cacheableMethods method', function () {
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+    ]);
+
+    $responseA = TestConnector::make()->send(new AllowedCachedPostRequest, $mockClient);
+
+    expect($responseA->isCached())->toBeFalse();
+    expect($responseA->json())->toEqual(['name' => 'Sam']);
+
+    $responseB = TestConnector::make()->send(new AllowedCachedPostRequest, $mockClient);
+
+    expect($responseB->isCached())->toBeTrue();
+    expect($responseB->json())->toEqual(['name' => 'Sam']);
 });
 
 test('a response will not be cached if the response was not 2xx', function () {
