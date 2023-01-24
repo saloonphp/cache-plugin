@@ -110,7 +110,7 @@ test('it wont cache on anything other than GET and OPTIONS', function () {
     expect($responseB->json())->toEqual(['name' => 'Gareth']);
 });
 
-test('it will cache post requests if you customise the cacheableMethods property', function () {
+test('it will cache post requests if you customise the cacheableMethods method', function () {
     $mockClient = new MockClient([
         MockResponse::make(['name' => 'Sam']),
     ]);
