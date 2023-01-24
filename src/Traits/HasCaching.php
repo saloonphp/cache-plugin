@@ -63,7 +63,6 @@ trait HasCaching
 
         $pendingRequest->middleware()->onRequest(
             callable: new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey($pendingRequest), $this->invalidateCache),
-            name: 'cacheMiddleware',
         );
     }
 
