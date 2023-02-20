@@ -3,7 +3,7 @@
 Official Cache Plugin for Saloon v2, to install it - run the following command:
 
 ```php
-composer require sammyjo20/saloon-cache-plugin "2.0.0-beta1"
+composer require sammyjo20/saloon-cache-plugin
 ```
 >Requires Saloon v2 and PHP 8.1+
 
