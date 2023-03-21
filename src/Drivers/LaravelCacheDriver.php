@@ -2,6 +2,7 @@
 
 namespace Sammyjo20\SaloonCachePlugin\Drivers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Cache\Repository;
 use Sammyjo20\SaloonCachePlugin\Data\CachedResponse;
 use Sammyjo20\SaloonCachePlugin\Interfaces\DriverInterface;
@@ -12,9 +13,9 @@ class LaravelCacheDriver implements DriverInterface
      * @param Repository $store
      */
     public function __construct(
-        protected Repository $store,
+        protected ?Repository $store = null,
     ) {
-        //
+        $this->store = $this->store ?: Cache::store();
     }
 
     /**
