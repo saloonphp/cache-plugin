@@ -13,6 +13,7 @@ use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\AllowedCachedPostRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\UserRequestWithoutExpiry;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\ShortLivedCachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestUsingCarbon;
@@ -357,4 +358,18 @@ test('a request with the HasCaching trait will use `cacheExpiry` to determine th
     expect($responseB->isSimulated())->toBeTrue();
     expect($responseB->isCached())->toBeTrue();
     expect($responseB->header('X-Howdy'))->toEqual('Yeehaw');
+});
+
+test('it throws an exception if you use the HasCaching trait without an expiry method', function () {
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+    ]);
+
+    $connector = new TestConnector;
+    $request = new UserRequestWithoutExpiry;
+
+    $this->expectException(Exception::class);
+    $this->expectExceptionMessage('Method [cacheExpiry] must be implemented on Saloon\CachePlugin\Tests\Fixtures\Requests\UserRequestWithoutExpiry.');
+
+    $connector->send($request, $mockClient);
 });
