@@ -11,6 +11,7 @@ use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Connectors\CachedConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\BodyCacheKeyRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\AllowedCachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
@@ -184,6 +185,37 @@ test('query parameters are used in the cache key', function () use ($filesystem)
     $responseC = TestConnector::make()->send($requestC, $mockClient);
 
     expect($responseC->isCached())->toBeFalse();
+});
+
+test('body can be used in the cache key', function () {
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+        MockResponse::make(['name' => 'Gareth']),
+    ]);
+
+    $requestA = new BodyCacheKeyRequest;
+    $requestA->body()->set([
+        'name' => 'Sam',
+        'expiry' => '10 hours',
+    ]);
+
+    $responseA = TestConnector::make()->send($requestA, $mockClient);
+
+    expect($responseA->isCached())->toBeFalse();
+    expect($responseA->json())->toEqual(['name' => 'Sam']);
+    expect($responseA->status())->toEqual(200);
+
+    $requestB = new BodyCacheKeyRequest;
+    $requestB->body()->set([
+        'name' => 'Sam',
+        'expiry' => '10 hours',
+    ]);
+
+    $responseB = TestConnector::make()->send($requestB, $mockClient);
+
+    expect($responseB->isCached())->toBeTrue();
+    expect($responseB->json())->toEqual(['name' => 'Sam']);
+    expect($responseB->status())->toEqual(200);
 });
 
 test('you will not receive a cached response if the response has expired', function () {
