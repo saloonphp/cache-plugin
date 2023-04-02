@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use League\Flysystem\Filesystem;
-use Saloon\CachePlugin\Tests\Fixtures\Requests\BodyCacheKeyRequest;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use League\Flysystem\Local\LocalFilesystemAdapter;
@@ -12,6 +11,7 @@ use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Connectors\CachedConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\BodyCacheKeyRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\AllowedCachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
@@ -196,7 +196,7 @@ test('body can be used in the cache key', function () {
     $requestA = new BodyCacheKeyRequest;
     $requestA->body()->set([
         'name' => 'Sam',
-        'expiry' => '10 hours'
+        'expiry' => '10 hours',
     ]);
 
     $responseA = TestConnector::make()->send($requestA, $mockClient);
@@ -208,7 +208,7 @@ test('body can be used in the cache key', function () {
     $requestB = new BodyCacheKeyRequest;
     $requestB->body()->set([
         'name' => 'Sam',
-        'expiry' => '10 hours'
+        'expiry' => '10 hours',
     ]);
 
     $responseB = TestConnector::make()->send($requestB, $mockClient);

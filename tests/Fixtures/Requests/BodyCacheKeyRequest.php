@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
-use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use League\Flysystem\Filesystem;
+use Saloon\Contracts\Body\HasBody;
+use Saloon\Traits\Body\HasJsonBody;
 use Saloon\Contracts\PendingRequest;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Traits\HasCaching;
@@ -15,7 +16,6 @@ use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Drivers\FlysystemDriver;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
-use Saloon\Traits\Body\HasJsonBody;
 
 class BodyCacheKeyRequest extends Request implements Cacheable, HasBody
 {

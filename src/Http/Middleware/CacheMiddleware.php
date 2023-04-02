@@ -27,8 +27,7 @@ class CacheMiddleware implements RequestMiddleware
         protected int     $ttl,
         protected ?string $cacheKey,
         protected bool    $invalidate = false,
-    )
-    {
+    ) {
         //
     }
 
@@ -54,7 +53,7 @@ class CacheMiddleware implements RequestMiddleware
             // the SimulatedResponsePayload here.
 
             if ($this->invalidate === false && $cachedResponse->hasNotExpired()) {
-                $pendingRequest->middleware()->onResponse(fn(Response $response) => $response->setCached(true), true);
+                $pendingRequest->middleware()->onResponse(fn (Response $response) => $response->setCached(true), true);
 
                 return $cachedResponse->getSimulatedResponsePayload();
             }
