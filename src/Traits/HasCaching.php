@@ -58,12 +58,17 @@ trait HasCaching
             ? $request->cacheExpiryInSeconds()
             : $connector->cacheExpiryInSeconds();
 
-        // Register a request middleware which wil handle the caching and recording
-        // of real responses for caching.
+        // Register a request middleware which wil handle the caching
+        // and recording of real responses for caching.
 
-        $pendingRequest->middleware()->onRequest(
-            callable: new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey($pendingRequest), $this->invalidateCache),
-        );
+        $pendingRequest->middleware()->onRequest(function (PendingRequest $middlewarePendingRequest) use ($cacheDriver, $cacheExpiryInSeconds) {
+            // We'll call the cache middleware invokable class with the $middlewarePendingRequest
+            // because this $pendingRequest has everything loaded, unlike the instance that
+            // the plugin is provided. This allows us to have access to body and merged
+            // properties.
+
+            return call_user_func(new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey($middlewarePendingRequest), $this->invalidateCache), $middlewarePendingRequest);
+        });
     }
 
     /**

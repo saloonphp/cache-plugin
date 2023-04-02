@@ -22,7 +22,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.13",
-        "pestphp/pest": "^1.21.2",
+        "pestphp/pest": "^2.3",
         "spatie/ray": "^1.34.2",
         "league/flysystem": "^3.12.2",
         "orchestra/testbench": "^8.0",
