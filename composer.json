@@ -1,5 +1,5 @@
 {
-    "name": "saloonhttp/cache-plugin",
+    "name": "saloonphp/cache-plugin",
     "description": "Official plugin for caching Saloon responses",
     "type": "library",
     "license": "MIT",
