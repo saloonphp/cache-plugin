@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Traits;
 
+use Carbon\Carbon;
 use Saloon\Enums\Method;
+use Saloon\Contracts\Request;
+use Saloon\Contracts\Connector;
 use Saloon\Contracts\PendingRequest;
 use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Exceptions\HasCachingException;
@@ -54,9 +57,7 @@ trait HasCaching
             ? $request->resolveCacheDriver()
             : $connector->resolveCacheDriver();
 
-        $cacheExpiryInSeconds = $request instanceof Cacheable
-            ? $request->cacheExpiryInSeconds()
-            : $connector->cacheExpiryInSeconds();
+        $cacheExpiryInSeconds = $this->getCacheExpiryInSeconds($request, $connector);
 
         // Register a request middleware which wil handle the caching
         // and recording of real responses for caching.
@@ -69,6 +70,34 @@ trait HasCaching
 
             return call_user_func(new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey($middlewarePendingRequest), $this->invalidateCache), $middlewarePendingRequest);
         });
+    }
+
+    /**
+     * Get the cache expiration in seconds
+     */
+    protected function getCacheExpiryInSeconds(Request $request, Connector $connector): int
+    {
+        $expirator = $request instanceof Cacheable ? $request : $connector;
+
+        if (! method_exists($expirator, 'cacheExpiryInSeconds') && ! method_exists($expirator, 'cacheExpiry')) {
+            throw new \Exception(sprintf('Method [cacheExpiry] must be implemented on %s.', $expirator::class));
+        }
+
+        $expiry = method_exists($expirator, 'cacheExpiryInSeconds')
+            ? $expirator->cacheExpiryInSeconds()
+            : $expirator->cacheExpiry();
+
+        if (is_int($expiry)) {
+            return $expiry;
+        }
+
+        if (! class_exists(Carbon::class)) {
+            throw new \Exception(sprintf('nesbot/carbon is required to use %s as an expiry.', Carbon::class));
+        }
+
+        return is_int($expiry)
+            ? $expiry
+            : Carbon::now()->diffInRealSeconds($expiry);
     }
 
     /**

@@ -14,8 +14,10 @@ use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\BodyCacheKeyRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\AllowedCachedPostRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\UserRequestWithoutExpiry;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\ShortLivedCachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestUsingCarbon;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestWithoutCacheable;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestOnCachedConnector;
 
@@ -367,6 +369,39 @@ test('it throws an exception if you use the HasCaching trait without the Cacheab
 
     $this->expectException(HasCachingException::class);
     $this->expectExceptionMessage('Your connector or request must implement Saloon\CachePlugin\Contracts\Cacheable to use the HasCaching plugin');
+
+    $connector->send($request, $mockClient);
+});
+
+test('a request with the HasCaching trait will use `cacheExpiry` to determine the ttl', function () {
+    $mockClient = new MockClient([
+        MockResponse::make('<p>Hi</p>', 201, ['X-Howdy' => 'Yeehaw']),
+    ]);
+
+    $responseA = TestConnector::make()->send(new CachedUserRequestUsingCarbon, $mockClient);
+
+    expect($responseA->isCached())->toBeFalse();
+    expect($responseA->header('X-Howdy'))->toEqual('Yeehaw');
+
+    // Now send a response without the mock middleware, and it should be cached!
+
+    $responseB = TestConnector::make()->send(new CachedUserRequestUsingCarbon);
+
+    expect($responseB->isSimulated())->toBeTrue();
+    expect($responseB->isCached())->toBeTrue();
+    expect($responseB->header('X-Howdy'))->toEqual('Yeehaw');
+});
+
+test('it throws an exception if you use the HasCaching trait without an expiry method', function () {
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+    ]);
+
+    $connector = new TestConnector;
+    $request = new UserRequestWithoutExpiry;
+
+    $this->expectException(Exception::class);
+    $this->expectExceptionMessage('Method [cacheExpiry] must be implemented on Saloon\CachePlugin\Tests\Fixtures\Requests\UserRequestWithoutExpiry.');
 
     $connector->send($request, $mockClient);
 });

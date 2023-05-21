@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Contracts;
 
+use Carbon\CarbonInterface;
+
+/**
+ * @method int|CarbonInterface cacheExpiry
+ */
 interface Cacheable
 {
     /**
@@ -12,11 +17,4 @@ interface Cacheable
      * @return \Saloon\CachePlugin\Contracts\Driver
      */
     public function resolveCacheDriver(): Driver;
-
-    /**
-     * Define the cache expiry in seconds
-     *
-     * @return int
-     */
-    public function cacheExpiryInSeconds(): int;
 }
