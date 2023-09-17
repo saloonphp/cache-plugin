@@ -6,10 +6,10 @@ namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Saloon\Http\PendingRequest;
 use League\Flysystem\Filesystem;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Traits\Body\HasJsonBody;
-use Saloon\Http\PendingRequest;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\CachePlugin\Contracts\Cacheable;
