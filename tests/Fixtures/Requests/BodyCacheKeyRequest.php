@@ -9,7 +9,7 @@ use Saloon\Http\Request;
 use League\Flysystem\Filesystem;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Traits\Body\HasJsonBody;
-use Saloon\Contracts\PendingRequest;
+use Saloon\Http\PendingRequest;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\CachePlugin\Contracts\Cacheable;
@@ -43,6 +43,8 @@ class BodyCacheKeyRequest extends Request implements Cacheable, HasBody
 
     protected function cacheKey(PendingRequest $pendingRequest): ?string
     {
-        return (string)$pendingRequest->body()->all();
+        dd($pendingRequest->body());
+
+        return (string)$pendingRequest->body()->get();
     }
 }

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Http\Middleware;
 
-use Saloon\Helpers\Date;
-use Saloon\Contracts\Response;
-use Saloon\Helpers\ResponseRecorder;
+use DateTimeImmutable;
+use Saloon\Http\Response;
+use Saloon\Data\RecordedResponse;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\Contracts\ResponseMiddleware;
 use Saloon\CachePlugin\Data\CachedResponse;
@@ -15,10 +15,6 @@ class CacheRecorderMiddleware implements ResponseMiddleware
 {
     /**
      * Constructor
-     *
-     * @param \Saloon\CachePlugin\Contracts\Driver $driver
-     * @param int $ttl
-     * @param string $cacheKey
      */
     public function __construct(
         protected Driver $driver,
@@ -31,8 +27,7 @@ class CacheRecorderMiddleware implements ResponseMiddleware
     /**
      * Register a response middleware
      *
-     * @param \Saloon\Contracts\Response $response
-     * @return void
+     * @throws \Exception
      */
     public function __invoke(Response $response): void
     {
@@ -40,11 +35,11 @@ class CacheRecorderMiddleware implements ResponseMiddleware
             return;
         }
 
-        $expiresAt = Date::now()->addSeconds($this->ttl)->toDateTime();
+        $expiresAt = new DateTimeImmutable('+' . $this->ttl .' seconds');
 
         $this->driver->set(
             key: $this->cacheKey,
-            cachedResponse: new CachedResponse(ResponseRecorder::record($response), $expiresAt, $this->ttl)
+            cachedResponse: new CachedResponse(RecordedResponse::fromResponse($response), $expiresAt, $this->ttl)
         );
     }
 }

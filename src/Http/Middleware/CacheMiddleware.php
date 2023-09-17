@@ -4,23 +4,19 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Http\Middleware;
 
-use Saloon\Contracts\Response;
-use Saloon\Contracts\PendingRequest;
+use Saloon\Http\Response;
+use Saloon\Enums\PipeOrder;
+use Saloon\Http\PendingRequest;
+use Saloon\Contracts\FakeResponse;
 use Saloon\Contracts\RequestMiddleware;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Data\CachedResponse;
 use Saloon\CachePlugin\Helpers\CacheKeyHelper;
-use Saloon\Contracts\SimulatedResponsePayload;
 
 class CacheMiddleware implements RequestMiddleware
 {
     /**
      * Constructor
-     *
-     * @param \Saloon\CachePlugin\Contracts\Driver $driver
-     * @param int $ttl
-     * @param string|null $cacheKey
-     * @param bool $invalidate
      */
     public function __construct(
         protected Driver  $driver,
@@ -34,11 +30,9 @@ class CacheMiddleware implements RequestMiddleware
     /**
      * Handle the middleware
      *
-     * @param \Saloon\Contracts\PendingRequest $pendingRequest
-     * @return \Saloon\Contracts\SimulatedResponsePayload|null
      * @throws \JsonException
      */
-    public function __invoke(PendingRequest $pendingRequest): ?SimulatedResponsePayload
+    public function __invoke(PendingRequest $pendingRequest): ?FakeResponse
     {
         $driver = $this->driver;
         $cacheKey = hash('sha256', $this->cacheKey ?? CacheKeyHelper::create($pendingRequest));
@@ -53,9 +47,9 @@ class CacheMiddleware implements RequestMiddleware
             // the SimulatedResponsePayload here.
 
             if ($this->invalidate === false && $cachedResponse->hasNotExpired()) {
-                $pendingRequest->middleware()->onResponse(fn (Response $response) => $response->setCached(true), true);
+                $pendingRequest->middleware()->onResponse(fn (Response $response) => $response->setCached(true), order: PipeOrder::FIRST);
 
-                return $cachedResponse->getSimulatedResponsePayload();
+                return $cachedResponse->getFakeResponse();
             }
 
             // However if it has expired we will delete it and register
@@ -70,7 +64,7 @@ class CacheMiddleware implements RequestMiddleware
 
         $pendingRequest->middleware()->onResponse(
             callable: new CacheRecorderMiddleware($driver, $this->ttl, $cacheKey),
-            prepend: true,
+            order: PipeOrder::FIRST
         );
 
         return null;

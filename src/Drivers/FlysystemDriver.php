@@ -13,8 +13,6 @@ class FlysystemDriver implements Driver
 {
     /**
      * Constructor
-     *
-     * @param \League\Flysystem\Filesystem $store
      */
     public function __construct(
         protected Filesystem $store,
@@ -25,9 +23,6 @@ class FlysystemDriver implements Driver
     /**
      * Store the cached response on the driver.
      *
-     * @param string $key
-     * @param \Saloon\CachePlugin\Data\CachedResponse $cachedResponse
-     * @return void
      * @throws \League\Flysystem\FilesystemException
      */
     public function set(string $key, CachedResponse $cachedResponse): void
@@ -38,8 +33,6 @@ class FlysystemDriver implements Driver
     /**
      * Get the cached response from the driver.
      *
-     * @param string $cacheKey
-     * @return \Saloon\CachePlugin\Data\CachedResponse|null
      * @throws \League\Flysystem\FilesystemException
      */
     public function get(string $cacheKey): ?CachedResponse
@@ -60,8 +53,6 @@ class FlysystemDriver implements Driver
     /**
      * Delete the cached response
      *
-     * @param string $cacheKey
-     * @return void
      * @throws \League\Flysystem\FilesystemException
      */
     public function delete(string $cacheKey): void

@@ -6,17 +6,13 @@ namespace Saloon\CachePlugin\Data;
 
 use DateTimeImmutable;
 use Saloon\Data\RecordedResponse;
-use Saloon\Http\Faking\SimulatedResponsePayload;
-use Saloon\Contracts\SimulatedResponsePayload as SimulatedResponsePayloadContract;
+use Saloon\Http\Faking\FakeResponse;
+use Saloon\Contracts\FakeResponse as FakeResponseContract;
 
 class CachedResponse
 {
     /**
      * Constructor
-     *
-     * @param \Saloon\Data\RecordedResponse $recordedResponse
-     * @param \DateTimeImmutable $expiresAt
-     * @param int $ttl
      */
     public function __construct(
         readonly public RecordedResponse  $recordedResponse,
@@ -28,8 +24,6 @@ class CachedResponse
 
     /**
      * Check if the response has expired.
-     *
-     * @return bool
      */
     public function hasExpired(): bool
     {
@@ -38,8 +32,6 @@ class CachedResponse
 
     /**
      * Check if the response has not expired.
-     *
-     * @return bool
      */
     public function hasNotExpired(): bool
     {
@@ -47,15 +39,13 @@ class CachedResponse
     }
 
     /**
-     * Create a simulated response payload
-     *
-     * @return \Saloon\Contracts\SimulatedResponsePayload
+     * Create a fake response
      */
-    public function getSimulatedResponsePayload(): SimulatedResponsePayloadContract
+    public function getFakeResponse(): FakeResponseContract
     {
         $response = $this->recordedResponse;
 
-        return new SimulatedResponsePayload(
+        return new FakeResponse(
             body: $response->data,
             status: $response->statusCode,
             headers: $response->headers

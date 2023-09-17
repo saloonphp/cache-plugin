@@ -19,15 +19,11 @@ class CachedUserRequest extends Request implements Cacheable
 
     /**
      * Method
-     *
-     * @var \Saloon\Enums\Method
      */
     protected Method $method = Method::GET;
 
     /**
      * Resolve the API endpoint
-     *
-     * @return string
      */
     public function resolveEndpoint(): string
     {
@@ -36,8 +32,6 @@ class CachedUserRequest extends Request implements Cacheable
 
     /**
      * Resolve the cache driver
-     *
-     * @return \Saloon\CachePlugin\Contracts\Driver
      */
     public function resolveCacheDriver(): Driver
     {
@@ -46,8 +40,6 @@ class CachedUserRequest extends Request implements Cacheable
 
     /**
      * Define the cache expiry in seconds
-     *
-     * @return int
      */
     public function cacheExpiryInSeconds(): int
     {

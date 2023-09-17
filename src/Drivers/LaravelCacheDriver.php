@@ -12,8 +12,6 @@ class LaravelCacheDriver implements Driver
 {
     /**
      * Constructor
-     *
-     * @param \Illuminate\Contracts\Cache\Repository $store
      */
     public function __construct(
         protected Repository $store,
@@ -24,9 +22,6 @@ class LaravelCacheDriver implements Driver
     /**
      * Store the cached response on the driver.
      *
-     * @param string $key
-     * @param \Saloon\CachePlugin\Data\CachedResponse $cachedResponse
-     * @return void
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function set(string $key, CachedResponse $cachedResponse): void
@@ -37,8 +32,6 @@ class LaravelCacheDriver implements Driver
     /**
      * Get the cached response from the driver.
      *
-     * @param string $cacheKey
-     * @return \Saloon\CachePlugin\Data\CachedResponse|null
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function get(string $cacheKey): ?CachedResponse
@@ -55,8 +48,6 @@ class LaravelCacheDriver implements Driver
     /**
      * Delete the cached response.
      *
-     * @param string $cacheKey
-     * @return void
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function delete(string $cacheKey): void

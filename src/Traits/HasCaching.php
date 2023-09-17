@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Saloon\CachePlugin\Traits;
 
 use Saloon\Enums\Method;
-use Saloon\Contracts\PendingRequest;
+use Saloon\Http\PendingRequest;
 use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Exceptions\HasCachingException;
 use Saloon\CachePlugin\Http\Middleware\CacheMiddleware;
@@ -14,23 +14,17 @@ trait HasCaching
 {
     /**
      * Is caching enabled?
-     *
-     * @var bool
      */
     protected bool $cachingEnabled = true;
 
     /**
      * Should the existing cache be invalidated?
-     *
-     * @var bool
      */
     protected bool $invalidateCache = false;
 
     /**
      * Boot the "HasCaching" plugin
      *
-     * @param \Saloon\Contracts\PendingRequest $pendingRequest
-     * @return void
      * @throws \Saloon\CachePlugin\Exceptions\HasCachingException
      */
     public function bootHasCaching(PendingRequest $pendingRequest): void
@@ -73,9 +67,6 @@ trait HasCaching
 
     /**
      * Define a custom cache key
-     *
-     * @param \Saloon\Contracts\PendingRequest $pendingRequest
-     * @return string|null
      */
     protected function cacheKey(PendingRequest $pendingRequest): ?string
     {

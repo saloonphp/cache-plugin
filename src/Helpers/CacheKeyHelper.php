@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Helpers;
 
-use Saloon\Contracts\PendingRequest;
+use Saloon\Http\PendingRequest;
 
 class CacheKeyHelper
 {
     /**
      * Create a cache key from the request class name, URL, query and headers
      *
-     * @param \Saloon\Contracts\PendingRequest $pendingRequest
-     * @return string
      * @throws \JsonException
      */
     public static function create(PendingRequest $pendingRequest): string

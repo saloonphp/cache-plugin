@@ -34,7 +34,7 @@ test('a request with the HasCaching trait will cache the response with a real re
         'twitter' => '@carre_sam',
     ];
 
-    expect($responseA->isSimulated())->toBeFalse();
+    expect($responseA->isFaked())->toBeFalse();
     expect($responseA->isCached())->toBeFalse();
     expect($responseA->json())->toEqual($responseBody);
 
@@ -42,7 +42,7 @@ test('a request with the HasCaching trait will cache the response with a real re
 
     $responseB = TestConnector::make()->send(new CachedUserRequest);
 
-    expect($responseB->isSimulated())->toBeTrue();
+    expect($responseB->isFaked())->toBeTrue();
     expect($responseB->isCached())->toBeTrue();
     expect($responseB->json())->toEqual($responseBody);
 });
@@ -64,7 +64,7 @@ test('a request with the HasCaching trait will cache the response', function () 
 
     $responseB = TestConnector::make()->send(new CachedUserRequest, $mockClient);
 
-    expect($responseB->isSimulated())->toBeTrue();
+    expect($responseB->isFaked())->toBeTrue();
     expect($responseB->isCached())->toBeTrue();
     expect($responseB->status())->toEqual(201);
     expect($responseB->json())->toEqual(['name' => 'Sam']);
@@ -87,7 +87,7 @@ test('a request with the HasCaching trait will cache the response with string bo
 
     $responseB = TestConnector::make()->send(new CachedUserRequest);
 
-    expect($responseB->isSimulated())->toBeTrue();
+    expect($responseB->isFaked())->toBeTrue();
     expect($responseB->isCached())->toBeTrue();
     expect($responseB->status())->toEqual(201);
     expect($responseB->body())->toEqual('<p>Hi</p>');
