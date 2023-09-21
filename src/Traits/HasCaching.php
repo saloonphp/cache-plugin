@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Saloon\CachePlugin\Traits;
 
 use Saloon\Enums\Method;
+use Saloon\Enums\PipeOrder;
 use Saloon\Http\PendingRequest;
 use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Exceptions\HasCachingException;
@@ -25,7 +26,9 @@ trait HasCaching
     /**
      * Boot the "HasCaching" plugin
      *
+     * @param \Saloon\Http\PendingRequest $pendingRequest
      * @throws \Saloon\CachePlugin\Exceptions\HasCachingException
+     * @throws \Saloon\Exceptions\DuplicatePipeNameException
      */
     public function bootHasCaching(PendingRequest $pendingRequest): void
     {
@@ -62,7 +65,7 @@ trait HasCaching
             // properties.
 
             return call_user_func(new CacheMiddleware($cacheDriver, $cacheExpiryInSeconds, $this->cacheKey($middlewarePendingRequest), $this->invalidateCache), $middlewarePendingRequest);
-        });
+        }, order: PipeOrder::FIRST);
     }
 
     /**

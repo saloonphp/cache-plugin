@@ -43,8 +43,6 @@ class BodyCacheKeyRequest extends Request implements Cacheable, HasBody
 
     protected function cacheKey(PendingRequest $pendingRequest): ?string
     {
-        dd($pendingRequest->body());
-
         return (string)$pendingRequest->body()->get();
     }
 }

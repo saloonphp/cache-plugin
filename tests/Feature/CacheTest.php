@@ -55,6 +55,7 @@ test('a request with the HasCaching trait will cache the response', function () 
     $responseA = TestConnector::make()->send(new CachedUserRequest, $mockClient);
 
     expect($responseA->isCached())->toBeFalse();
+    expect($responseA->isMocked())->toBeTrue();
     expect($responseA->status())->toEqual(201);
     expect($responseA->json())->toEqual(['name' => 'Sam']);
     expect($responseA->header('X-Howdy'))->toEqual('Yeehaw');
@@ -66,6 +67,7 @@ test('a request with the HasCaching trait will cache the response', function () 
 
     expect($responseB->isFaked())->toBeTrue();
     expect($responseB->isCached())->toBeTrue();
+    expect($responseB->isMocked())->toBeFalse();
     expect($responseB->status())->toEqual(201);
     expect($responseB->json())->toEqual(['name' => 'Sam']);
     expect($responseB->header('X-Howdy'))->toEqual('Yeehaw');
