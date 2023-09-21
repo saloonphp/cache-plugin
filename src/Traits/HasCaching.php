@@ -26,7 +26,6 @@ trait HasCaching
     /**
      * Boot the "HasCaching" plugin
      *
-     * @param \Saloon\Http\PendingRequest $pendingRequest
      * @throws \Saloon\CachePlugin\Exceptions\HasCachingException
      * @throws \Saloon\Exceptions\DuplicatePipeNameException
      */
