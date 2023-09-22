@@ -11,4 +11,4 @@ composer require saloonphp/cache-plugin "^1.0"
 
 ### Documentation
 
-[Click here to read the documentation](https://docs.saloon.dev/next-steps/caching)
+[Click here to read the documentation](https://docs.saloon.dev/v/1/next-steps/caching)
