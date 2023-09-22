@@ -1,11 +1,13 @@
-## Saloon Cache Plugin
+## Official Caching Plugin For Saloon v1
+This is the official repository for the cache plugin. This plugin can automatically cache your Saloon
+requests to one of many storage adapters.
 
-Official Cache Plugin for Saloon v1, to install it - run the following command:
+### Installation
+You can install the cache plugin through Composer.
 
 ```php
-composer require saloonphp/cache-plugin
+composer require saloonphp/cache-plugin "^1.0"
 ```
->Requires Saloon v1 and PHP 8.0+
 
 ### Documentation
 
