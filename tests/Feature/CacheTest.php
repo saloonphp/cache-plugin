@@ -15,6 +15,7 @@ use Saloon\CachePlugin\Tests\Fixtures\Requests\BodyCacheKeyRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\AllowedCachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\ResponseBasedExpiryRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\ShortLivedCachedUserRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestWithoutCacheable;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestOnCachedConnector;
@@ -247,6 +248,22 @@ test('you will not receive a cached response if the response has expired', funct
 
     expect($responseC->isCached())->toBeFalse();
     expect($responseC->json())->toEqual(['name' => 'Michael']);
+});
+
+test('you can define a cache expiry based on a response', function () {
+    $expectedExpiry = 90;
+    $mockClient = new MockClient([
+        MockResponse::make(['expiry' => $expectedExpiry]),
+    ]);
+
+    $connector = new TestConnector;
+
+    $request = new ResponseBasedExpiryRequest();
+    $response = $connector->send($request, $mockClient);
+
+    $expiry = $request->resolveCacheExpiry($response);
+
+    expect($expiry)->toEqual($expectedExpiry);
 });
 
 test('you can define a cache on the connector and it returns a cached response', function () {

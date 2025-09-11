@@ -20,7 +20,6 @@ class CacheMiddleware implements RequestMiddleware
      */
     public function __construct(
         protected Driver  $driver,
-        protected int     $ttl,
         protected ?string $cacheKey,
         protected bool    $invalidate = false,
     ) {
@@ -63,7 +62,7 @@ class CacheMiddleware implements RequestMiddleware
         // the prepend option, so it runs first.
 
         $pendingRequest->middleware()->onResponse(
-            callable: new CacheRecorderMiddleware($driver, $this->ttl, $cacheKey),
+            callable: new CacheRecorderMiddleware($driver, $cacheKey),
             order: PipeOrder::FIRST
         );
 

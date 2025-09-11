@@ -26,7 +26,7 @@ class LaravelCacheDriver implements Driver
      */
     public function set(string $key, CachedResponse $cachedResponse): void
     {
-        $this->store->set($key, serialize($cachedResponse), $cachedResponse->ttl);
+        $this->store->set($key, serialize($cachedResponse), $cachedResponse->getTtl());
     }
 
     /**
