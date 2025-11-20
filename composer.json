@@ -24,7 +24,7 @@
         "friendsofphp/php-cs-fixer": "^3.13",
         "pestphp/pest": "^2.3 || ^4.0",
         "league/flysystem": "^3.12.2",
-        "orchestra/testbench": "^9.0 || ^10.0",
+        "orchestra/testbench": "^9.15 || ^10.7",
         "psr/simple-cache": "^3.0"
     },
     "scripts": {
