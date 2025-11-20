@@ -4,3 +4,4 @@ vendor
 .php-cs-fixer.cache
 .phpunit.result.cache
 tests/cache
+.phpunit.cache
