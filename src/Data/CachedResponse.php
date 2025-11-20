@@ -15,9 +15,9 @@ class CachedResponse
      * Constructor
      */
     public function __construct(
-        readonly public RecordedResponse  $recordedResponse,
-        readonly public DateTimeImmutable $expiresAt,
-        readonly public int $ttl,
+        public readonly RecordedResponse  $recordedResponse,
+        public readonly DateTimeImmutable $expiresAt,
+        public readonly int $ttl,
     ) {
         //
     }
