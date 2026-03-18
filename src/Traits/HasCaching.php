@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Saloon\CachePlugin\Traits;
 
 use Saloon\Enums\Method;
+use Saloon\Http\Request;
+use Saloon\Http\Connector;
 use Saloon\Enums\PipeOrder;
 use Saloon\Http\PendingRequest;
 use Saloon\CachePlugin\Contracts\Cacheable;
+use Saloon\CachePlugin\Helpers\CacheKeyHelper;
 use Saloon\CachePlugin\Exceptions\HasCachingException;
 use Saloon\CachePlugin\Http\Middleware\CacheMiddleware;
 
@@ -109,6 +112,35 @@ trait HasCaching
         $this->invalidateCache = true;
 
         return $this;
+    }
+
+    /**
+     * Delete the cached response without sending a request.
+     *
+     * When used on a Request, pass the Connector.
+     * When used on a Connector, pass the Request.
+     *
+     * @throws \JsonException
+     */
+    public function deleteCache(Connector|Request $counterpart): void
+    {
+        if ($this instanceof Request) {
+            $pendingRequest = $counterpart->createPendingRequest($this);
+        } else {
+            $pendingRequest = $this->createPendingRequest($counterpart);
+        }
+
+        $request = $pendingRequest->getRequest();
+        $connector = $pendingRequest->getConnector();
+
+        $cacheDriver = $request instanceof Cacheable
+            ? $request->resolveCacheDriver()
+            : $connector->resolveCacheDriver();
+
+        $rawKey = $this->cacheKey($pendingRequest) ?? CacheKeyHelper::create($pendingRequest);
+        $cacheKey = hash('sha256', $rawKey);
+
+        $cacheDriver->delete($cacheKey);
     }
 
     /**
