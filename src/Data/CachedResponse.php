@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Data;
 
+use DateInterval;
 use DateTimeImmutable;
 use Saloon\Data\RecordedResponse;
 use Saloon\Http\Faking\FakeResponse;
@@ -17,7 +18,6 @@ class CachedResponse
     public function __construct(
         public readonly RecordedResponse  $recordedResponse,
         public readonly DateTimeImmutable $expiresAt,
-        public readonly int $ttl,
     ) {
         //
     }
@@ -36,6 +36,14 @@ class CachedResponse
     public function hasNotExpired(): bool
     {
         return ! $this->hasExpired();
+    }
+
+    /**
+     * Get the cache TTL as an interval based on the expiry date.
+     */
+    public function getTtl(): DateInterval
+    {
+        return (new DateTimeImmutable())->diff($this->expiresAt);
     }
 
     /**

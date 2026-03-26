@@ -6,6 +6,7 @@ namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Saloon\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Traits\HasCaching;
@@ -28,7 +29,7 @@ class LaravelCachedUserRequest extends Request implements Cacheable
         return new LaravelCacheDriver(Cache::store('file'));
     }
 
-    public function cacheExpiryInSeconds(): int
+    public function resolveCacheExpiry(Response $response): int
     {
         return 60;
     }

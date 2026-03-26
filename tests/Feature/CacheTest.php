@@ -5,8 +5,10 @@ declare(strict_types=1);
 use League\Flysystem\Filesystem;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
+use Saloon\CachePlugin\Data\CachedResponse;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Saloon\CachePlugin\Exceptions\HasCachingException;
+use Saloon\CachePlugin\Tests\Fixtures\Stores\ArrayCache;
 use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Connectors\CachedConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedPostRequest;
@@ -15,7 +17,9 @@ use Saloon\CachePlugin\Tests\Fixtures\Requests\BodyCacheKeyRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedConnectorRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\AllowedCachedPostRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CustomKeyCachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\ResponseBasedExpiryRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\ShortLivedCachedUserRequest;
+use Saloon\CachePlugin\Tests\Fixtures\Requests\ResolveCacheExpiryCachedRequest;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestWithoutCacheable;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequestOnCachedConnector;
 
@@ -249,6 +253,22 @@ test('you will not receive a cached response if the response has expired', funct
     expect($responseC->json())->toEqual(['name' => 'Michael']);
 });
 
+test('you can define a cache expiry based on a response', function () {
+    $expectedExpiry = 90;
+    $mockClient = new MockClient([
+        MockResponse::make(['expiry' => $expectedExpiry]),
+    ]);
+
+    $connector = new TestConnector;
+
+    $request = new ResponseBasedExpiryRequest();
+    $response = $connector->send($request, $mockClient);
+
+    $expiry = $request->resolveCacheExpiry($response);
+
+    expect($expiry)->toEqual($expectedExpiry);
+});
+
 test('you can define a cache on the connector and it returns a cached response', function () {
     $mockClient = new MockClient([
         MockResponse::make(['name' => 'Sam']),
@@ -371,4 +391,98 @@ test('it throws an exception if you use the HasCaching trait without the Cacheab
     $this->expectExceptionMessage('Your connector or request must implement Saloon\CachePlugin\Contracts\Cacheable to use the HasCaching plugin');
 
     $connector->send($request, $mockClient);
+});
+
+test('driver stores correct DateTimeImmutable expiry', function () {
+    $cache = new ArrayCache;
+    $expiry = new DateTimeImmutable('+60 seconds');
+
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+    ]);
+
+    $connector = new TestConnector;
+
+    $request = new ResolveCacheExpiryCachedRequest($cache, $expiry);
+    $connector->send($request, $mockClient);
+
+    $raw = $cache->get($connector->getCacheKey($request));
+    expect($raw)->not->toBeNull();
+
+    $cachedResponse = unserialize($raw, ['allowed_classes' => true]);
+
+    expect($cachedResponse)->toBeInstanceOf(CachedResponse::class);
+    expect($cachedResponse->expiresAt)->toBeInstanceOf(DateTimeImmutable::class);
+    expect($cachedResponse->expiresAt->getTimestamp())->toEqual($expiry->getTimestamp());
+});
+
+test('driver converts integer expiry into correct DateTimeImmutable', function () {
+    $cache = new ArrayCache;
+    $ttl = 120;
+
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+    ]);
+
+    $connector = new TestConnector;
+
+    $before = time();
+    $request = new ResolveCacheExpiryCachedRequest($cache, $ttl);
+    $connector->send($request, $mockClient);
+    $after = time();
+
+    $raw = $cache->get($connector->getCacheKey($request));
+    expect($raw)->not->toBeNull();
+
+    $cachedResponse = unserialize($raw, ['allowed_classes' => true]);
+
+    expect($cachedResponse)->toBeInstanceOf(CachedResponse::class);
+    expect($cachedResponse->expiresAt)->toBeInstanceOf(DateTimeImmutable::class);
+    expect($cachedResponse->expiresAt->getTimestamp())->toBeBetween($before + $ttl, $after + $ttl);
+});
+
+test('driver does not store item when expiry is zero', function () {
+    $cache = new ArrayCache;
+
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+    ]);
+
+    $connector = new TestConnector;
+
+    $request = new ResolveCacheExpiryCachedRequest($cache, 0);
+    $connector->send($request, $mockClient);
+
+    expect($cache->get($connector->getCacheKey($request)))->toBeNull();
+});
+
+test('driver does not store item when expiry is negative', function () {
+    $cache = new ArrayCache;
+
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+    ]);
+
+    $connector = new TestConnector;
+
+    $request = new ResolveCacheExpiryCachedRequest($cache, -10);
+    $connector->send($request, $mockClient);
+
+    expect($cache->get($connector->getCacheKey($request)))->toBeNull();
+});
+
+test('driver does not store item when DateTimeImmutable is in the past', function () {
+    $cache = new ArrayCache;
+    $past = new DateTimeImmutable('-60 seconds');
+
+    $mockClient = new MockClient([
+        MockResponse::make(['name' => 'Sam']),
+    ]);
+
+    $connector = new TestConnector;
+
+    $request = new ResolveCacheExpiryCachedRequest($cache, $past);
+    $connector->send($request, $mockClient);
+
+    expect($cache->get($connector->getCacheKey($request)))->toBeNull();
 });

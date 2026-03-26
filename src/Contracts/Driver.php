@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Contracts;
 
-use Saloon\Data\RecordedResponse;
 use Saloon\CachePlugin\Data\CachedResponse;
 
 interface Driver
@@ -16,8 +15,6 @@ interface Driver
 
     /**
      * Get the cached response from the driver.
-     *
-     * @return RecordedResponse|null
      */
     public function get(string $cacheKey): ?CachedResponse;
 

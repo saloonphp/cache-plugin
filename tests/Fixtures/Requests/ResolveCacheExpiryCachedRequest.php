@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
+use DateTimeImmutable;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
-use League\Flysystem\Filesystem;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\CachePlugin\Contracts\Cacheable;
-use Saloon\CachePlugin\Drivers\FlysystemDriver;
-use League\Flysystem\Local\LocalFilesystemAdapter;
+use Saloon\CachePlugin\Drivers\PsrCacheDriver;
+use Saloon\CachePlugin\Tests\Fixtures\Stores\ArrayCache;
 
-class CachedUserRequest extends Request implements Cacheable
+class ResolveCacheExpiryCachedRequest extends Request implements Cacheable
 {
     use HasCaching;
 
@@ -22,6 +22,13 @@ class CachedUserRequest extends Request implements Cacheable
      * Method
      */
     protected Method $method = Method::GET;
+
+    public function __construct(
+        protected ArrayCache $cache,
+        protected int|DateTimeImmutable $cacheExpiry,
+    ) {
+        //
+    }
 
     /**
      * Resolve the API endpoint
@@ -36,14 +43,14 @@ class CachedUserRequest extends Request implements Cacheable
      */
     public function resolveCacheDriver(): Driver
     {
-        return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
+        return new PsrCacheDriver($this->cache);
     }
 
     /**
-     * Define the cache expiry in seconds
+     * Define the cache expiry in DateTimeImmutable
      */
-    public function resolveCacheExpiry(Response $response): int
+    public function resolveCacheExpiry(Response $response): int|DateTimeImmutable
     {
-        return 60;
+        return $this->cacheExpiry;
     }
 }
