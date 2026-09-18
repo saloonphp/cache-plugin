@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use League\Flysystem\Filesystem;
+use Saloon\Http\Faking\MockClient;
+use Saloon\Http\Faking\MockResponse;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
-use Saloon\Http\Faking\MockClient;
-use Saloon\Http\Faking\MockResponse;
 
 $filesystem = new Filesystem(new LocalFilesystemAdapter(cachePath()));
 
