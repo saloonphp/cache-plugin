@@ -6,6 +6,7 @@ namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Saloon\Http\Response;
 use League\Flysystem\Filesystem;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Traits\HasCaching;
@@ -29,7 +30,7 @@ class CachedUserRequestOnCachedConnector extends Request implements Cacheable
         return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath() . '/custom')));
     }
 
-    public function cacheExpiryInSeconds(): int
+    public function resolveCacheExpiry(Response $response): int
     {
         return 30;
     }

@@ -7,13 +7,14 @@ namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
+use League\Flysystem\Filesystem;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\CachePlugin\Contracts\Cacheable;
-use Saloon\CachePlugin\Drivers\PsrCacheDriver;
-use Saloon\CachePlugin\Tests\Fixtures\Stores\ArrayCache;
+use Saloon\CachePlugin\Drivers\FlysystemDriver;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 
-class PsrCachedUserRequest extends Request implements Cacheable
+class ResponseBasedExpiryRequest extends Request implements Cacheable
 {
     use HasCaching;
 
@@ -24,18 +25,13 @@ class PsrCachedUserRequest extends Request implements Cacheable
         return '/user';
     }
 
-    public function __construct(protected ArrayCache $cache)
-    {
-        //
-    }
-
     public function resolveCacheDriver(): Driver
     {
-        return new PsrCacheDriver($this->cache);
+        return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }
 
     public function resolveCacheExpiry(Response $response): int
     {
-        return 60;
+        return $response->json()['expiry'];
     }
 }

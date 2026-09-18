@@ -6,6 +6,7 @@ namespace Saloon\CachePlugin\Tests\Fixtures\Requests;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Saloon\Http\Response;
 use Saloon\Http\PendingRequest;
 use League\Flysystem\Filesystem;
 use Saloon\Contracts\Body\HasBody;
@@ -36,7 +37,7 @@ class BodyCacheKeyRequest extends Request implements Cacheable, HasBody
         return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }
 
-    public function cacheExpiryInSeconds(): int
+    public function resolveCacheExpiry(Response $response): int
     {
         return 60;
     }

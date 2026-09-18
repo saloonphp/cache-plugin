@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Saloon\CachePlugin\Tests\Fixtures\Connectors;
 
+use Saloon\Http\Response;
 use Saloon\Http\Connector;
 use League\Flysystem\Filesystem;
 use Saloon\CachePlugin\Contracts\Driver;
@@ -26,7 +27,7 @@ class CachedConnector extends Connector implements Cacheable
         return new FlysystemDriver(new Filesystem(new LocalFilesystemAdapter(cachePath())));
     }
 
-    public function cacheExpiryInSeconds(): int
+    public function resolveCacheExpiry(Response $response): int
     {
         return 60;
     }
