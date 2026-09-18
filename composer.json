@@ -17,7 +17,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "saloonphp/saloon": "^4.1.0"
     },
     "require-dev": {
