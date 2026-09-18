@@ -34,6 +34,10 @@ class CacheMiddleware implements RequestMiddleware
      */
     public function __invoke(PendingRequest $pendingRequest): ?FakeResponse
     {
+        if ($pendingRequest->getMockClient()?->shouldBypassResponseCache() === true) {
+            return null;
+        }
+
         $driver = $this->driver;
         $cacheKey = hash('sha256', $this->cacheKey ?? CacheKeyHelper::create($pendingRequest));
 

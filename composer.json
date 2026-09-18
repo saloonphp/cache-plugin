@@ -17,8 +17,8 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": "^8.2",
-        "saloonphp/saloon": "^3.0 || ^4.0"
+        "php": "^8.3",
+        "saloonphp/saloon": "^4.1.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.13",
