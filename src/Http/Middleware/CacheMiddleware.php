@@ -35,7 +35,7 @@ class CacheMiddleware implements RequestMiddleware
     public function __invoke(PendingRequest $pendingRequest): ?FakeResponse
     {
         $driver = $this->driver;
-        $cacheKey = hash('sha256', $this->cacheKey ?? CacheKeyHelper::create($pendingRequest));
+        $cacheKey = CacheKeyHelper::createHashed($pendingRequest, $this->cacheKey);
 
         $cachedResponse = $driver->get($cacheKey);
 

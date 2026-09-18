@@ -6,6 +6,7 @@ use League\Flysystem\Filesystem;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use League\Flysystem\Local\LocalFilesystemAdapter;
+use Saloon\CachePlugin\Exceptions\HasCachingException;
 use Saloon\CachePlugin\Tests\Fixtures\Connectors\TestConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Connectors\CachedConnector;
 use Saloon\CachePlugin\Tests\Fixtures\Requests\CachedUserRequest;
@@ -18,7 +19,7 @@ beforeEach(function () use ($filesystem) {
     $filesystem->deleteDirectory('/');
 });
 
-test('deleteCache removes a cached response without sending a request', function () {
+test('clearCache removes a cached response without sending a request', function () {
     $mockClient = new MockClient([
         MockResponse::make(['name' => 'Sam']),
     ]);
@@ -36,7 +37,7 @@ test('deleteCache removes a cached response without sending a request', function
 
     // Delete the cache without sending a request
     $request = new CachedUserRequest;
-    $request->deleteCache($connector);
+    $request->clearCache($connector);
 
     // Now sending should result in a cache miss
     $mockClient = new MockClient([
@@ -48,17 +49,17 @@ test('deleteCache removes a cached response without sending a request', function
     expect($responseC->json())->toEqual(['name' => 'Michael']);
 });
 
-test('deleteCache on an uncached request does not throw', function () {
+test('clearCache on an uncached request does not throw', function () {
     $connector = new TestConnector;
     $request = new CachedUserRequest;
 
     // Should not throw
-    $request->deleteCache($connector);
+    $request->clearCache($connector);
 
     expect(true)->toBeTrue();
 });
 
-test('deleteCache uses a custom cacheKey override', function () use ($filesystem) {
+test('clearCache uses a custom cacheKey override', function () use ($filesystem) {
     $mockClient = new MockClient([
         MockResponse::make(['name' => 'Sam']),
     ]);
@@ -73,12 +74,12 @@ test('deleteCache uses a custom cacheKey override', function () use ($filesystem
 
     // Delete using the custom key
     $request = new CustomKeyCachedUserRequest;
-    $request->deleteCache($connector);
+    $request->clearCache($connector);
 
     expect($filesystem->fileExists($hash))->toBeFalse();
 });
 
-test('after deleteCache the next send fetches fresh and repopulates cache', function () {
+test('after clearCache the next send fetches fresh and repopulates cache', function () {
     $mockClient = new MockClient([
         MockResponse::make(['name' => 'Sam']),
     ]);
@@ -95,7 +96,7 @@ test('after deleteCache the next send fetches fresh and repopulates cache', func
 
     // Delete cache
     $request = new CachedUserRequest;
-    $request->deleteCache($connector);
+    $request->clearCache($connector);
 
     // Send again - should be a fresh response
     $mockClient = new MockClient([
@@ -112,7 +113,7 @@ test('after deleteCache the next send fetches fresh and repopulates cache', func
     expect($responseD->json())->toEqual(['name' => 'Teo']);
 });
 
-test('deleteCache works when called from the connector', function () {
+test('clearCache works when called from the connector', function () {
     $mockClient = new MockClient([
         MockResponse::make(['name' => 'Sam']),
     ]);
@@ -127,7 +128,7 @@ test('deleteCache works when called from the connector', function () {
     expect($responseB->isCached())->toBeTrue();
 
     // Delete cache from the connector side
-    $connector->deleteCache(new CachedConnectorRequest);
+    $connector->clearCache(new CachedConnectorRequest);
 
     // Should be a cache miss now
     $mockClient = new MockClient([
@@ -138,3 +139,15 @@ test('deleteCache works when called from the connector', function () {
     expect($responseC->isCached())->toBeFalse();
     expect($responseC->json())->toEqual(['name' => 'Michael']);
 });
+
+test('clearCache throws when called on a connector with another connector', function () {
+    $connector = new CachedConnector;
+
+    $connector->clearCache(new TestConnector);
+})->throws(HasCachingException::class, 'You must provide a Request instance when calling clearCache() on a Connector.');
+
+test('clearCache throws when called on a request with another request', function () {
+    $request = new CachedUserRequest;
+
+    $request->clearCache(new CachedUserRequest);
+})->throws(HasCachingException::class, 'You must provide a Connector instance when calling clearCache() on a Request.');

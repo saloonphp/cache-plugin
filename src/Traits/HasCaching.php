@@ -115,32 +115,33 @@ trait HasCaching
     }
 
     /**
-     * Delete the cached response without sending a request.
+     * Clear the cached response without sending a request.
      *
      * When used on a Request, pass the Connector.
      * When used on a Connector, pass the Request.
      *
      * @throws \JsonException
+     * @throws \Saloon\CachePlugin\Exceptions\HasCachingException
      */
-    public function deleteCache(Connector|Request $counterpart): void
+    public function clearCache(Connector|Request $counterpart): void
     {
-        if ($this instanceof Request) {
-            $pendingRequest = $counterpart->createPendingRequest($this);
-        } else {
-            $pendingRequest = $this->createPendingRequest($counterpart);
+        if ($this instanceof Request && ! $counterpart instanceof Connector) {
+            throw new HasCachingException('You must provide a Connector instance when calling clearCache() on a Request.');
         }
 
-        $request = $pendingRequest->getRequest();
-        $connector = $pendingRequest->getConnector();
+        if ($this instanceof Connector && ! $counterpart instanceof Request) {
+            throw new HasCachingException('You must provide a Request instance when calling clearCache() on a Connector.');
+        }
 
-        $cacheDriver = $request instanceof Cacheable
-            ? $request->resolveCacheDriver()
-            : $connector->resolveCacheDriver();
+        $pendingRequest = $this instanceof Request
+            ? $counterpart->createPendingRequest($this)
+            : $this->createPendingRequest($counterpart);
 
-        $rawKey = $this->cacheKey($pendingRequest) ?? CacheKeyHelper::create($pendingRequest);
-        $cacheKey = hash('sha256', $rawKey);
+        $cacheDriver = $pendingRequest->getRequest() instanceof Cacheable
+            ? $pendingRequest->getRequest()->resolveCacheDriver()
+            : $pendingRequest->getConnector()->resolveCacheDriver();
 
-        $cacheDriver->delete($cacheKey);
+        $cacheDriver->delete(CacheKeyHelper::createHashed($pendingRequest, $this->cacheKey($pendingRequest)));
     }
 
     /**
