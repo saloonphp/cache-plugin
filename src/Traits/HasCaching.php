@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Saloon\CachePlugin\Traits;
 
 use Saloon\Enums\Method;
+use Saloon\Http\Request;
+use Saloon\Http\Connector;
 use Saloon\Enums\PipeOrder;
 use Saloon\Http\PendingRequest;
 use Saloon\CachePlugin\Contracts\Cacheable;
+use Saloon\CachePlugin\Helpers\CacheKeyHelper;
 use Saloon\CachePlugin\Exceptions\HasCachingException;
 use Saloon\CachePlugin\Http\Middleware\CacheMiddleware;
 
@@ -109,6 +112,36 @@ trait HasCaching
         $this->invalidateCache = true;
 
         return $this;
+    }
+
+    /**
+     * Clear the cached response without sending a request.
+     *
+     * When used on a Request, pass the Connector.
+     * When used on a Connector, pass the Request.
+     *
+     * @throws \JsonException
+     * @throws \Saloon\CachePlugin\Exceptions\HasCachingException
+     */
+    public function clearCache(Connector|Request $counterpart): void
+    {
+        if ($this instanceof Request && ! $counterpart instanceof Connector) {
+            throw new HasCachingException('You must provide a Connector instance when calling clearCache() on a Request.');
+        }
+
+        if ($this instanceof Connector && ! $counterpart instanceof Request) {
+            throw new HasCachingException('You must provide a Request instance when calling clearCache() on a Connector.');
+        }
+
+        $pendingRequest = $this instanceof Request
+            ? $counterpart->createPendingRequest($this)
+            : $this->createPendingRequest($counterpart);
+
+        $cacheDriver = $pendingRequest->getRequest() instanceof Cacheable
+            ? $pendingRequest->getRequest()->resolveCacheDriver()
+            : $pendingRequest->getConnector()->resolveCacheDriver();
+
+        $cacheDriver->delete(CacheKeyHelper::createHashed($pendingRequest, $this->cacheKey($pendingRequest)));
     }
 
     /**

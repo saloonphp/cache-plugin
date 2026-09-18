@@ -22,4 +22,14 @@ class CacheKeyHelper
 
         return json_encode(compact('className', 'requestUrl', 'query', 'headers'), JSON_THROW_ON_ERROR);
     }
+
+    /**
+     * Create a hashed cache key, falling back to the request-derived key when none is provided
+     *
+     * @throws \JsonException
+     */
+    public static function createHashed(PendingRequest $pendingRequest, ?string $cacheKey = null): string
+    {
+        return hash('sha256', $cacheKey ?? static::create($pendingRequest));
+    }
 }
